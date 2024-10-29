@@ -1,0 +1,44 @@
+# Translation file
+
+#
+# Generic
+#
+
+# Module label 'ModuleDebWebName'
+ModuleDebWebName = DebWeb
+# Module description 'ModuleDebWebDesc'
+ModuleDebWebDesc = DebWeb description
+
+#
+# Admin page
+#
+DebWebSetup = DebWeb setup
+Settings = Settings
+DebWebSetupPage = DebWeb setup page
+NewSection=New section
+DebWebNumRefModelDesc = Six digit declaration sequence number.
+DEBWEB_MYPARAM1 = My param 1
+DEBWEB_MYPARAM1Tooltip = My param 1 tooltip
+DEBWEB_MYPARAM2=My param 2
+DEBWEB_MYPARAM2Tooltip=My param 2 tooltip
+
+
+#
+# About page
+#
+About = About
+DebWebAbout = About DebWeb
+DebWebAboutPage = DebWeb about page
+
+#
+# Sample page
+#
+DebWebArea = Home DebWeb
+MyPageName = My page name
+ModeTransport = Transport mode
+
+#
+# Sample widget
+#
+MyWidget = My widget
+MyWidgetDescription = My widget description
