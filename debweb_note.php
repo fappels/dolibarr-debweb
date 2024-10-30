@@ -80,7 +80,7 @@ dol_include_once('/debweb/class/debweb.class.php');
 dol_include_once('/debweb/lib/debweb_debweb.lib.php');
 
 // Load translation files required by the page
-$langs->loadLangs(array("debweb@debweb", "companies"));
+$langs->loadLangs(array("debweb@debweb", "companies", "intracommreport", "intracommreport"));
 
 // Get parameters
 $id = GETPOST('id', 'int');

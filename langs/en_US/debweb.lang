@@ -7,7 +7,7 @@
 # Module label 'ModuleDebWebName'
 ModuleDebWebName = DebWeb
 # Module description 'ModuleDebWebDesc'
-ModuleDebWebDesc = DebWeb description
+ModuleDebWebDesc = DebWeb Intra-Eu customs declaration.
 
 #
 # Admin page
@@ -21,7 +21,7 @@ DEBWEB_MYPARAM1 = My param 1
 DEBWEB_MYPARAM1Tooltip = My param 1 tooltip
 DEBWEB_MYPARAM2=My param 2
 DEBWEB_MYPARAM2Tooltip=My param 2 tooltip
-
+c_debweb_mode_transport = DebWeb transport modes
 
 #
 # About page
@@ -36,6 +36,8 @@ DebWebAboutPage = DebWeb about page
 DebWebArea = Home DebWeb
 MyPageName = My page name
 ModeTransport = Transport mode
+AnalysisPeriodMonth = Month
+AnalysisPeriodYear = Year
 
 #
 # Sample widget

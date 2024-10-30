@@ -243,7 +243,18 @@ class modDebWeb extends DolibarrModules
 		 );
 		 */
 		/* BEGIN MODULEBUILDER DICTIONARIES */
-		$this->dictionaries = array();
+		$this->dictionaries=array(
+			'langs'=>'debweb@debweb',
+			'tabname'=>array(MAIN_DB_PREFIX."c_debweb_mode_transport"),
+			'tablib'=>array("c_debweb_mode_transport"),
+			'tabsql'=>array('SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'c_debweb_mode_transport as f'),
+			'tabsqlsort'=>array("label ASC"),
+			'tabfield'=>array("code,label"),
+			'tabfieldvalue'=>array("code,label"),
+			'tabfieldinsert'=>array("code,label"),
+			'tabrowid'=>array("rowid"),
+			'tabcond'=>array(isModEnabled('debweb'))
+		);
 		/* END MODULEBUILDER DICTIONARIES */
 
 		// Boxes/Widgets
@@ -333,7 +344,7 @@ class modDebWeb extends DolibarrModules
 		$this->menu[$r++]=array(
 			'fk_menu'=>'fk_mainmenu=accountancy,fk_leftmenu=debweb',
 			'type'=>'left',
-			'titre'=>'List DebWeb',
+			'titre'=>'IntracommReportList',
 			'mainmenu'=>'debweb',
 			'leftmenu'=>'debweb_debweb_list',
 			'url'=>'/debweb/debweb_list.php',
@@ -348,7 +359,7 @@ class modDebWeb extends DolibarrModules
 		$this->menu[$r++]=array(
 			'fk_menu'=>'fk_mainmenu=accountancy,fk_leftmenu=debweb',
 			'type'=>'left',
-			'titre'=>'New DebWeb',
+			'titre'=>'NewDeclaration',
 			'mainmenu'=>'debweb',
 			'leftmenu'=>'debweb_debweb_new',
 			'url'=>'/debweb/debweb_card.php?action=create',

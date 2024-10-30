@@ -5,35 +5,39 @@
 #
 
 # Module label 'ModuleMyModuleName'
-ModuleMyModuleName = MyModule
+ModuleMyModuleName = DebWeb
 # Module description 'ModuleMyModuleDesc'
-ModuleMyModuleDesc = MyModule description
+ModuleMyModuleDesc = DebWeb Déclaration douanière intra-européenne.
 
 #
 # Admin page
 #
-MyModuleSetup = MyModule setup
-Settings = Settings
-MyModuleSetupPage = MyModule setup page
-NewSection=New section
+MyModuleSetup = DebWeb configuration
+Settings = Configuration
+MyModuleSetupPage = DebWeb page configuration
+NewSection=Nouvelle section
 MYMODULE_MYPARAM1 = My param 1
 MYMODULE_MYPARAM1Tooltip = My param 1 tooltip
 MYMODULE_MYPARAM2=My param 2
 MYMODULE_MYPARAM2Tooltip=My param 2 tooltip
-
+c_debweb_mode_transport = DebWeb mode transport
+DebWebNumRefModelDesc = Numéro de déclarant à six chiffres.
 
 #
 # About page
 #
 About = About
-MyModuleAbout = About MyModule
-MyModuleAboutPage = MyModule about page
+MyModuleAbout = A propos DebWeb
+MyModuleAboutPage = DebWeb page a propos
 
 #
 # Sample page
 #
-MyModuleArea = Home MyModule
+MyModuleArea = DebWeb
 MyPageName = My page name
+ModeTransport = Mode Transport
+AnalysisPeriodMonth = Mois
+AnalysisPeriodYear = Année
 
 #
 # Sample widget

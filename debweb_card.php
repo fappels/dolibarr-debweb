@@ -80,11 +80,13 @@ if (!$res) {
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 dol_include_once('/debweb/class/debweb.class.php');
 dol_include_once('/debweb/lib/debweb_debweb.lib.php');
 
 // Load translation files required by the page
-$langs->loadLangs(array("debweb@debweb", "other"));
+$langs->loadLangs(array("debweb@debweb", "other", "intracommreport"));
 
 // Get parameters
 $id = GETPOSTINT('id');
@@ -231,6 +233,7 @@ if (empty($reshook)) {
 $form = new Form($db);
 $formfile = new FormFile($db);
 $formproject = new FormProjets($db);
+$formother = new FormOther($db);
 
 $title = $langs->trans("DebWeb")." - ".$langs->trans('Card');
 //$title = $object->ref." - ".$langs->trans('Card');
@@ -286,6 +289,17 @@ if ($action == 'create') {
 
 	print '<table class="border centpercent tableforfieldcreate">'."\n";
 
+	// Analysis period
+	print '<tr>';
+	print '<td class="titlefieldcreate fieldrequired">';
+	print $langs->trans("AnalysisPeriod");
+	print '</td>';
+	print '<td>';
+	print $formother->select_month($month ? date('M') : $month, 'period_month', 0, 1, 'widthauto valignmiddle ', true);
+	print $formother->selectyear($year ? date('Y') : $year, 'period_year');
+	print '</td>';
+	print '</tr>';
+
 	// Common attributes
 	include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_add.tpl.php';
 
@@ -321,6 +335,17 @@ if (($id || $ref) && $action == 'edit') {
 	print dol_get_fiche_head();
 
 	print '<table class="border centpercent tableforfieldedit">'."\n";
+
+	// Analysis period
+	print '<tr>';
+	print '<td class="titlefieldedit fieldrequired">';
+	print $langs->trans("AnalysisPeriod");
+	print '</td>';
+	print '<td>';
+	print $formother->select_month($month ? date('M') : $month, 'period_month', 0, 1, 'widthauto valignmiddle ', true);
+	print $formother->selectyear($year ? date('Y') : $year, 'period_year');
+	print '</td>';
+	print '</tr>';
 
 	// Common attributes
 	include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_edit.tpl.php';
@@ -446,6 +471,19 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	print '<div class="fichehalfleft">';
 	print '<div class="underbanner clearboth"></div>';
 	print '<table class="border centpercent tableforfield">'."\n";
+
+	// Analysis period
+	$monthArray = monthArray($langs);
+	print '<tr>';
+	print '<td class="titlefield">';
+	print $langs->trans("AnalysisPeriod");
+	print '</td>';
+	print '<td>';
+	print $monthArray[$object->period_month];
+	print ' ';
+	print $object->period_year;
+	print '</td>';
+	print '</tr>';
 
 	// Common attributes
 	//$keyforbreak='fieldkeytoswitchonsecondcolumn';	// We change column just before this field

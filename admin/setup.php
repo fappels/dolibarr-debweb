@@ -59,7 +59,7 @@ require_once '../lib/debweb.lib.php';
 //require_once "../class/myclass.class.php";
 
 // Translations
-$langs->loadLangs(array("admin", "debweb@debweb"));
+$langs->loadLangs(array("admin", "debweb@debweb", "intracommreport"));
 
 // Initialize technical object to manage hooks of page. Note that conf->hooks_modules contains array of hook context
 $hookmanager->initHooks(array('debwebsetup', 'globalsetup'));

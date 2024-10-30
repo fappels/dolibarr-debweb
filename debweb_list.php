@@ -86,7 +86,7 @@ require_once __DIR__.'/class/debweb.class.php';
 //dol_include_once('/othermodule/class/otherobject.class.php');
 
 // Load translation files required by the page
-$langs->loadLangs(array("debweb@debweb", "other"));
+$langs->loadLangs(array("debweb@debweb", "other", "intracommreport"));
 
 // Get parameters
 $action     = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view'; // The action 'create'/'add', 'edit'/'update', 'view', ...
@@ -715,6 +715,8 @@ $savnbfield = $totalarray['nbfield'];
 $totalarray = array();
 $totalarray['nbfield'] = 0;
 $imaxinloop = ($limit ? min($num, $limit) : $num);
+$monthArray = monthArray($langs);
+
 while ($i < $imaxinloop) {
 	$obj = $db->fetch_object($resql);
 	if (empty($obj)) {
@@ -807,6 +809,8 @@ while ($i < $imaxinloop) {
 					print $object->getLibStatut(5);
 				} elseif ($key == 'rowid') {
 					print $object->showOutputField($val, $key, $object->id, '');
+				} elseif ($key == 'period_month') {
+					print $monthArray[$object->period_month];
 				} else {
 					print $object->showOutputField($val, $key, $object->$key, '');
 				}
