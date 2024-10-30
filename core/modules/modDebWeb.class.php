@@ -535,6 +535,28 @@ class modDebWeb extends DolibarrModules
 			0,
 			0 // printable
 		);
+		$extrafields->addExtraField(
+			'mode_transport', // Code of attribute
+			"ModeTransport", // label of attribute
+			'sellist', // Type of attribute ('boolean', 'int', 'text', 'varchar', 'date', 'datehour','price','phone','mail','password','url','select','checkbox', ...)
+			1, // Position of attribute
+			0, // Size/length of attribute
+			'facture_fourn', // Element type ('member', 'product', 'thirdparty', ...)
+			0, // Is field unique or not
+			0, // Is field required or not
+			'3', // Defaulted value (In database. use the default_value feature for default value on screen. Example: '', '0', 'null', 'avalue')
+			array('options' => array('c_debweb_mode_transport:label:code::(active:=:1)'=>'Mode Transport table')), // Params for field (ex for select list : array('options' => array(value'=>'label of option')) )
+			1, // Is attribute always editable regardless of the document status
+			'', // Permission to check
+			1, // Visibilty
+			0, // Deprecated. Use visibility instead.
+			'', // Computed value
+			'0', // Entity of extrafields (for multicompany modules)
+			'debweb@debweb', // Language file
+			'isModEnabled("debweb")', // Condition to have the field enabled or not
+			0,
+			0 // printable
+		);
 		// Permissions
 		$this->remove($options);
 
