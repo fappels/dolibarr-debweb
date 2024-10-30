@@ -124,10 +124,10 @@ class mod_debweb_standard extends ModeleNumRefDebWeb
 		global $db, $conf;
 
 		// first we get the max value
-		$posindice = strlen($this->prefix) + 6;
+		$posindice = strlen($this->prefix) + 1;
 		$sql = "SELECT MAX(CAST(SUBSTRING(ref FROM ".$posindice.") AS SIGNED)) as max";
 		$sql .= " FROM ".MAIN_DB_PREFIX."debweb_debweb";
-		$sql .= " WHERE ref LIKE '".$db->escape($this->prefix)."____-%'";
+		$sql .= " WHERE ref LIKE '".$db->escape($this->prefix)."______'";
 		if ($object->ismultientitymanaged == 1) {
 			$sql .= " AND entity = ".$conf->entity;
 		} elseif ($object->ismultientitymanaged == 2) {

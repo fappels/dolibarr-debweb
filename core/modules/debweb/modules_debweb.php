@@ -29,7 +29,8 @@
  */
 
 require_once DOL_DOCUMENT_ROOT.'/core/class/commondocgenerator.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonnumrefgenerator.class.php';
+//require_once DOL_DOCUMENT_ROOT.'/core/class/commonnumrefgenerator.class.php';
+dol_include_once('/debweb/core/class/commonnumrefgenerator.class.php'); // TODO replace by core when upgrade to V19
 
 
 /**
