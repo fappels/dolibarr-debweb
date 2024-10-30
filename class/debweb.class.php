@@ -637,6 +637,7 @@ class DebWeb extends CommonObject
 			} elseif ($this->exporttype == 'des') {
 				$intracommreport->numero_declaration = $newref;
 				$content_xml = $intracommreport->getXMLDes($this->period_year, $this->period_month, $this->type_declaration);
+				$this->errors = array_merge($this->errors, $intracommreport->errors);
 			}
 			if (is_string($content_xml)) {
 				if (!dol_is_dir($dirdest)) {
@@ -683,7 +684,7 @@ class DebWeb extends CommonObject
 		$e = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><fichier_deb></fichier_deb>');
 
 		$declaration_des = $e->addChild('declaration_des');
-		$declaration_des->addChild('num_des', $this->ref);
+		$declaration_des->addChild('num_des', $this->numero_declaration);
 		$declaration_des->addChild('num_tvaFr', $mysoc->tva_intra); // /^FR[a-Z0-9]{2}[0-9]{9}$/  // Doit faire 13 caractères
 		$declaration_des->addChild('mois_des', (string) $period_month);
 		$declaration_des->addChild('an_des', (string) $period_year);
