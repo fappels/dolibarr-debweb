@@ -295,8 +295,8 @@ if ($action == 'create') {
 	print $langs->trans("AnalysisPeriod");
 	print '</td>';
 	print '<td>';
-	print $formother->select_month($month ? date('M') : $month, 'period_month', 0, 1, 'widthauto valignmiddle ', true);
-	print $formother->selectyear($year ? date('Y') : $year, 'period_year');
+	print $formother->select_month(date('M'), 'period_month', 0, 1, 'widthauto valignmiddle ', true);
+	print $formother->selectyear(date('Y'), 'period_year');
 	print '</td>';
 	print '</tr>';
 
@@ -342,8 +342,8 @@ if (($id || $ref) && $action == 'edit') {
 	print $langs->trans("AnalysisPeriod");
 	print '</td>';
 	print '<td>';
-	print $formother->select_month($month ? date('M') : $month, 'period_month', 0, 1, 'widthauto valignmiddle ', true);
-	print $formother->selectyear($year ? date('Y') : $year, 'period_year');
+	print $formother->select_month(empty($object->period_month) ? date('M') : $object->period_month, 'period_month', 0, 1, 'widthauto valignmiddle ', true);
+	print $formother->selectyear(empty($object->period_year) ? date('Y') : $object->period_year, 'period_year');
 	print '</td>';
 	print '</tr>';
 

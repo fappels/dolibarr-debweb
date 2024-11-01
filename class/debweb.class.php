@@ -632,10 +632,10 @@ class DebWeb extends CommonObject
 			$filename = $dirdest.'/'.$this->exporttype.'_'.$this->newref.'.xml';
 			$intracommreport = new IntracommReport($this->db);
 			if ($this->exporttype == 'deb') {
-				$this->numero_declaration = $newref;
+				$this->numero_declaration = $this->newref;
 				$content_xml = $this->getXMLDeb($this->period_year, $this->period_month, $this->type_declaration);
 			} elseif ($this->exporttype == 'des') {
-				$intracommreport->numero_declaration = $newref;
+				$intracommreport->numero_declaration = $this->newref;
 				$content_xml = $intracommreport->getXMLDes($this->period_year, $this->period_month, $this->type_declaration);
 				$this->errors = array_merge($this->errors, $intracommreport->errors);
 			}
