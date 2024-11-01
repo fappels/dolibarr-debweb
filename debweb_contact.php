@@ -102,6 +102,9 @@ if (!$permissiontoread) {
 	accessforbidden();
 }
 
+if ($permissiontoadd) {
+	$permission = true; // for add contacts template
+}
 
 /*
  * Add a new contact

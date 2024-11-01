@@ -596,6 +596,23 @@ class modDebWeb extends DolibarrModules
 			}
 		}
 
+		$nbr_type_contact_sql = "SELECT rowid FROM llx_c_type_contact WHERE element = 'debweb'";
+		$resql = $this->db->query($nbr_type_contact_sql);
+		$num = $this->db->num_rows($resql);
+
+		if ($resql && empty($num)) {
+			$max_type_contact_sql = "SELECT MAX(rowid) as rowid FROM llx_c_type_contact";
+			$res = $this->db->query($max_type_contact_sql);
+			if ($res) {
+				$obj = $this->db->fetch_object($res);
+
+				$i = intval($obj->rowid) + 1;
+
+				$sqlins = "INSERT INTO `llx_c_type_contact` (`rowid`, `element`, `source`, `code`, `libelle`, `active`, `module`, `position`) VALUES ('".$i."', 'debweb', 'internal', 'INTRACOMMREPORTRESP', 'Responsable suivi du rapport intracomminautaire', '1', NULL, '0')";
+				$this->db->query($sqlins);
+			}
+		}
+
 		return $this->_init($sql, $options);
 	}
 
