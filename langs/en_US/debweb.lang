@@ -19,8 +19,11 @@ NewSection=New section
 DebWebNumRefModelDesc = Six digit declaration sequence number.
 DEBWEB_MYPARAM1 = My param 1
 DEBWEB_MYPARAM1Tooltip = My param 1 tooltip
-DEBWEB_MYPARAM2=My param 2
-DEBWEB_MYPARAM2Tooltip=My param 2 tooltip
+INTRACOMMREPORT_NUM_AGREMENTTooltip=Numéro d’agrément délivré par le centre de collecte de rat-tachement
+INTRACOMMREPORT_TYPE_ACTEURTooltip=Deux valeurs possibles, PSI ou TDP avec ◦PSI : déclarant pour son compte ◦TDP : Tiers déclarant
+INTRACOMMREPORT_ROLE_ACTEURTooltip=Deux valeurs possibles, sender ou PSI avec ◦sender : émetteur du fichier ◦PSI : Déclarant.
+INTRACOMMREPORT_NIV_OBLIGATION_INTRODUCTIONTooltip=Valeur attendue : 1 pour une réponse statistique, 4 pour un état récapitulatif ou 5 pour les deux.
+INTRACOMMREPORT_NIV_OBLIGATION_EXPEDITIONTooltip=Valeur attendue : 1 pour une réponse statistique, 4 pour un état récapitulatif ou 5 pour les deux.
 c_debweb_mode_transport = DebWeb transport modes
 
 #

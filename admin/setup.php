@@ -105,9 +105,25 @@ if (!$user->admin) {
 //$item->cssClass = 'minwidth500';
 
 // Setup conf for selection of a simple string input
-//$item = $formSetup->newItem('DEBWEB_MYPARAM2');
-//$item->defaultFieldValue = 'default value';
-//$item->fieldAttr['placeholder'] = 'A placeholder here';
+$item = $formSetup->newItem('INTRACOMMREPORT_NUM_AGREMENT');
+$item->defaultFieldValue = '';
+$item->fieldAttr['placeholder'] = '';
+
+$item = $formSetup->newItem('INTRACOMMREPORT_TYPE_ACTEUR');
+$item->defaultFieldValue = 'PSI';
+$item->fieldAttr['placeholder'] = '';
+
+$item = $formSetup->newItem('INTRACOMMREPORT_ROLE_ACTEUR');
+$item->defaultFieldValue = 'PSI';
+$item->fieldAttr['placeholder'] = '';
+
+$item = $formSetup->newItem('INTRACOMMREPORT_NIV_OBLIGATION_INTRODUCTION');
+$item->defaultFieldValue = '1';
+$item->fieldAttr['placeholder'] = '';
+
+$item = $formSetup->newItem('INTRACOMMREPORT_NIV_OBLIGATION_EXPEDITION');
+$item->defaultFieldValue = '1';
+$item->fieldAttr['placeholder'] = '';
 
 // Setup conf for selection of a simple textarea input but we replace the text of field title
 //$item = $formSetup->newItem('DEBWEB_MYPARAM3');
@@ -150,7 +166,7 @@ if (!$user->admin) {
 //$item->helpText = $langs->transnoentities('DEBWEB_MYPARAM10');
 
 // Setup conf for a category selection
-//$formSetup->newItem('DEBWEB_CATEGORY_ID_XXX')->setAsCategory('product');
+$formSetup->newItem('INTRACOMMREPORT_CATEG_FRAISDEPORT')->setAsCategory('product');
 
 // Setup conf DEBWEB_MYPARAM10
 //$item = $formSetup->newItem('DEBWEB_MYPARAM10');
