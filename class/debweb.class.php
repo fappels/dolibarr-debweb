@@ -60,9 +60,6 @@ class DebWeb extends CommonObject
 	 */
 	public $picto = 'fa-file';
 
-	public $numero_declaration = '000000';
-
-
 	const STATUS_DRAFT = 0;
 	const STATUS_VALIDATED = 1;
 	const STATUS_CANCELED = 9;
@@ -631,11 +628,10 @@ class DebWeb extends CommonObject
 			$dirdest = $conf->debweb->dir_output.'/debweb/'.$this->newref;
 			$filename = $dirdest.'/'.$this->exporttype.'_'.$this->newref.'.xml';
 			$intracommreport = new IntracommReport($this->db);
+			$intracommreport->numero_declaration = $this->newref;
 			if ($this->exporttype == 'deb') {
-				$this->numero_declaration = $this->newref;
-				$content_xml = $this->getXMLDeb($this->period_year, $this->period_month, $this->type_declaration);
+				$content_xml = $intracommreport->getXML('O', $this->type_declaration, $this->period_year.'-'.$this->period_month);
 			} elseif ($this->exporttype == 'des') {
-				$intracommreport->numero_declaration = $this->newref;
 				$content_xml = $intracommreport->getXMLDes($this->period_year, $this->period_month, $this->type_declaration);
 				$this->errors = array_merge($this->errors, $intracommreport->errors);
 			}
@@ -666,41 +662,6 @@ class DebWeb extends CommonObject
 			return -1;
 		}
 	}
-
-	/**
-	 * Generate XMLDes file
-	 *
-	 * @param int		$period_year		Year of declaration
-	 * @param int		$period_month		Month of declaration
-	 * @param string	$type_declaration	Declaration type by default - 'introduction' or 'expedition' (always 'expedition' for Des)
-	 * @return string|false					Return a well-formed XML string based on SimpleXML element, false or 0 if error
-	 */
-	public function getXMLDeb($period_year, $period_month, $type_declaration = 'expedition')
-	{
-		global $mysoc;
-
-		$intracommreport = new IntracommReport($this->db);
-
-		$e = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><fichier_deb></fichier_deb>');
-
-		$declaration_des = $e->addChild('declaration_des');
-		$declaration_des->addChild('num_des', $this->numero_declaration);
-		$declaration_des->addChild('num_tvaFr', $mysoc->tva_intra); // /^FR[a-Z0-9]{2}[0-9]{9}$/  // Doit faire 13 caractères
-		$declaration_des->addChild('mois_des', (string) $period_month);
-		$declaration_des->addChild('an_des', (string) $period_year);
-
-		// Add invoice lines
-		$res = $intracommreport->addItemsFact($declaration_des, $type_declaration, $period_year.'-'.$period_month, 'deb');
-
-		$this->errors = array_unique($intracommreport->errors);
-
-		if (!empty($res)) {
-			return $e->asXML();
-		} else {
-			return false;
-		}
-	}
-
 
 	/**
 	 *	Set draft status
