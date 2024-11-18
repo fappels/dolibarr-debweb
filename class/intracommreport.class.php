@@ -195,7 +195,9 @@ class IntracommReport extends CommonObject
 		$this->errors = array_unique($this->errors);
 
 		if (!empty($res)) {
-			return $e->asXML();
+			$dom = dom_import_simplexml($e)->ownerDocument;
+			$dom->formatOutput = true;
+			return $dom->saveXML();
 		} else {
 			return false;
 		}
