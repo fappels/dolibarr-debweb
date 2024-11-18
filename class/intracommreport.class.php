@@ -363,7 +363,7 @@ class IntracommReport extends CommonObject
 		}
 		$cn8->addChild('CN8Code', $code_douane);
 		$item->addChild('MSConsDestCode', $res->code); // code iso pays client
-		$item->addChild('countryOfOriginCode', substr($res->zip, 0, 2)); // code iso pays d'origine
+		//$item->addChild('countryOfOriginCode', substr($res->zip, 0, 2)); // code iso pays d'origine
 		$item->addChild('netMass', (string) round($res->weight * $res->qty)); // Poids du produit
 		$item->addChild('quantityInSU', (string) $res->qty); // Quantité de produit dans la ligne
 		$item->addChild('invoicedAmount', (string) round($res->total_ht)); // Montant total ht de la facture (entier attendu)
