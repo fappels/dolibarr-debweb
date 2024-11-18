@@ -371,9 +371,9 @@ class IntracommReport extends CommonObject
 		if (!empty($res->tva_intra)) {
 			$item->addChild('partnerId', $res->tva_intra);
 		}
-		$item->addChild('statisticalProcedureCode', '11');
+		$item->addChild('statisticalProcedureCode', '21'); // TODO make this configurable
 		$nature_of_transaction = $item->addChild('NatureOfTransaction');
-		$nature_of_transaction->addChild('natureOfTransactionACode', '2');
+		$nature_of_transaction->addChild('natureOfTransactionACode', '1');
 		$nature_of_transaction->addChild('natureOfTransactionBCode', '1');
 		$item->addChild('modeOfTransportCode', $res->mode_transport);
 		$item->addChild('regionCode', substr($res->zip, 0, 2));
