@@ -312,13 +312,13 @@ class IntracommReport extends CommonObject
 		global $mysoc, $conf;
 
 		if ($type == 'expedition' || $exporttype == 'des') {
-			$sql = "SELECT f.ref as refinvoice, f.total_ht";
+			$sql = "SELECT f.ref as refinvoice, f.rowid as fk_facture, f.total_ht";
 			$table = 'facture';
 			$table_extraf = 'facture_extrafields';
 			$tabledet = 'facturedet';
 			$field_link = 'fk_facture';
 		} else { // Introduction
-			$sql = "SELECT f.ref_supplier as refinvoice, f.total_ht";
+			$sql = "SELECT f.ref_supplier as refinvoice, f.rowid as fk_facture, f.total_ht";
 			$table = 'facture_fourn';
 			$table_extraf = 'facture_fourn_extrafields';
 			$tabledet = 'facture_fourn_det';
@@ -327,7 +327,7 @@ class IntracommReport extends CommonObject
 		$sql .= ", l.fk_product, l.qty
 				, p.weight, p.rowid as id_prod, p.customcode
 				, s.rowid as id_client, s.nom, s.zip, s.fk_pays, s.tva_intra
-				, c.code
+				, c.code, cp.code as product_code
 				, ext.mode_transport
 				FROM ".MAIN_DB_PREFIX.$tabledet." l
 				INNER JOIN ".MAIN_DB_PREFIX.$table." f ON (f.rowid = l.".$this->db->escape($field_link).")
@@ -335,6 +335,7 @@ class IntracommReport extends CommonObject
 				INNER JOIN ".MAIN_DB_PREFIX."product p ON (p.rowid = l.fk_product)
 				INNER JOIN ".MAIN_DB_PREFIX."societe s ON (s.rowid = f.fk_soc)
 				LEFT JOIN ".MAIN_DB_PREFIX."c_country c ON (c.rowid = s.fk_pays)
+				LEFT JOIN ".MAIN_DB_PREFIX."c_country cp ON (cp.rowid = p.fk_country)
 				WHERE f.fk_statut > 0
 				AND l.product_type = ".($exporttype == "des" ? 1 : 0)."
 				AND f.entity = ".((int) $conf->entity)."
@@ -365,7 +366,7 @@ class IntracommReport extends CommonObject
 		}
 		$cn8->addChild('CN8Code', $code_douane);
 		$item->addChild('MSConsDestCode', $res->code); // code iso pays client
-		//$item->addChild('countryOfOriginCode', substr($res->zip, 0, 2)); // code iso pays d'origine
+		$item->addChild('countryOfOriginCode', $res->product_code); // code iso pays d'origine produit
 		$item->addChild('netMass', (string) round($res->weight * $res->qty)); // Poids du produit
 		$item->addChild('quantityInSU', (string) $res->qty); // Quantité de produit dans la ligne
 		$item->addChild('invoicedAmount', (string) round($res->total_ht)); // Montant total ht de la facture (entier attendu)
