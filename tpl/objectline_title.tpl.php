@@ -43,9 +43,9 @@ print '<tr class="liste_titre nodrag nodrop">';
 
 foreach ($objectline->fields as $key => $val) {
 	if ($val['isameasure']) {
-		print '<td class="linecolqty right">'.$langs->trans($val['label']).'</td>';
+		print '<td class="linecolqty right '.($val['css'] ? $val['css'] : '').'">'.$langs->trans($val['label']).'</td>';
 	} else {
-		print '<td class="linecol">'.$langs->trans($val['label']).'</td>';
+		print '<td class="linecol '.($val['css'] ? $val['css'] : '').'">'.$langs->trans($val['label']).'</td>';
 	}
 }
 

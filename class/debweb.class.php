@@ -116,7 +116,7 @@ class DebWeb extends CommonObject
 		"type_declaration" => array("type"=>"varchar(64)", "label"=>"TypeOfDeclaration", "enabled"=>"1", 'position'=>34, 'notnull'=>1, "visible"=>"1", "arrayofkeyval"=>array("introduction" => "Introduction", "expedition" => "Expedition"), "default"=>"expedition",),
 		"period_month" => array("type"=>"varchar(64)", "label"=>"AnalysisPeriodMonth", "enabled"=>"1", 'position'=>36, 'notnull'=>0, "visible"=>"2",),
 		"period_year" => array("type"=>"varchar(64)", "label"=>"AnalysisPeriodYear", "enabled"=>"1", 'position'=>38, 'notnull'=>0, "visible"=>"2",),
-		"amount" => array("type"=>"price", "label"=>"Amount", "enabled"=>"1", 'position'=>40, 'notnull'=>0, "visible"=>"1", "default"=>"null", "isameasure"=>"1", "help"=>"Help text for amount", "validate"=>"1",),
+		"amount" => array("type"=>"price", "label"=>"Amount", "enabled"=>"1", 'position'=>40, 'notnull'=>0, "visible"=>"1", "default"=>"null", "isameasure"=>"1", "help"=>"Help text for amount", "validate"=>"1", 'noteditable'=>'1',),
 		"description" => array("type"=>"text", "label"=>"Description", "enabled"=>"1", 'position'=>60, 'notnull'=>0, "visible"=>"3", "validate"=>"1",),
 		"note_public" => array("type"=>"html", "label"=>"NotePublic", "enabled"=>"1", 'position'=>61, 'notnull'=>0, "visible"=>"0", "cssview"=>"wordbreak", "validate"=>"1",),
 		"note_private" => array("type"=>"html", "label"=>"NotePrivate", "enabled"=>"1", 'position'=>62, 'notnull'=>0, "visible"=>"0", "cssview"=>"wordbreak", "validate"=>"1",),
@@ -127,7 +127,7 @@ class DebWeb extends CommonObject
 		"last_main_doc" => array("type"=>"varchar(255)", "label"=>"LastMainDoc", "enabled"=>"1", 'position'=>600, 'notnull'=>0, "visible"=>"0",),
 		"import_key" => array("type"=>"varchar(14)", "label"=>"ImportId", "enabled"=>"1", 'position'=>1000, 'notnull'=>-1, "visible"=>"-2",),
 		"model_pdf" => array("type"=>"varchar(255)", "label"=>"Model pdf", "enabled"=>"1", 'position'=>1010, 'notnull'=>-1, "visible"=>"0",),
-		"status" => array("type"=>"integer", "label"=>"Status", "enabled"=>"1", 'position'=>2000, 'notnull'=>1, "visible"=>"1", "index"=>"1", "arrayofkeyval"=>array("0" => "Draft", "1" => "Validated", "9" => "Canceled"), "validate"=>"1",),
+		"status" => array("type"=>"integer", "label"=>"Status", "enabled"=>"1", 'position'=>2000, 'notnull'=>1, "visible"=>"5", "index"=>"1", "arrayofkeyval"=>array("0" => "Draft", "1" => "Validated", "9" => "Canceled"), "validate"=>"1",),
 		'entity' => array('type'=>'sellist:entity:label:rowid', 'label'=>'Entity', 'enabled'=>1, 'visible'=>-2, 'notnull'=> 1, 'default'=>1, 'index'=>1, 'position'=>502),
 	);
 	public $rowid;
@@ -624,6 +624,10 @@ class DebWeb extends CommonObject
 		}
 
 		if (!$error) {
+			// set total amount
+			if (!empty($this->amount)) {
+				$this->setValueFrom('amount', $this->amount);
+			}
 			// generate xml
 			$dirdest = $conf->debweb->dir_output.'/debweb/'.$this->newref;
 			$filename = $dirdest.'/'.$this->exporttype.'_'.$this->newref.'.xml';
@@ -1064,9 +1068,9 @@ class DebWeb extends CommonObject
 	 */
 	public function getLinesArray()
 	{
-		global $conf;
-
 		$this->lines = array();
+
+		$this->amount = 0;
 
 		$intracommreport = new IntracommReport($this->db);
 
@@ -1097,6 +1101,8 @@ class DebWeb extends CommonObject
 					$objectline->region_code = substr($res->zip, 0, 2);
 
 					$this->lines[] = $objectline;
+
+					$this->amount += $objectline->amount;
 				}
 
 				$i++;
@@ -1264,19 +1270,19 @@ class DebWebLine extends CommonObjectLine
 	 * @var array  Array with all fields and their property. Do not use it as a static var. It may be modified by constructor.
 	 */
 	public $fields=array(
-		'id' => array('type'=>'integer', 'label'=>'ItemNumber', 'enabled'=>1, 'position'=>1, 'notnull'=>1, 'visible'=>1, 'noteditable'=>'1', 'index'=>1, 'comment'=>"Id"),
-		'fk_facture' => array('type'=>'integer:Facture:compta/facture/class/facture.class.php', 'label'=>'Facture', 'enabled'=>1, 'visible'=>1, 'position'=>10, 'noteditable'=>'1'),
-		'fk_product' => array('type'=>'integer:Product:product/class/product.class.php', 'label'=>'Product', 'enabled'=>'1', 'position'=>20, 'visible'=>1, 'noteditable'=>'1'),
-		'customcode' => array('type'=>'varchar(32)', 'label'=>'CN8Code', 'enabled'=>'1', 'position'=>30, 'visible'=>1, 'noteditable'=>'1'),
-		'code' => array('type'=>'varchar(32)', 'label'=>'MSConsDestCode', 'enabled'=>'1', 'position'=>40, 'visible'=>1, 'noteditable'=>'1'),
-		'product_code' => array('type'=>'varchar(32)', 'label'=>'countryOfOriginCode', 'enabled'=>'1', 'position'=>40, 'visible'=>1, 'noteditable'=>'1'),
-		'weight' => array('type'=>'real', 'label'=>'netMass', 'enabled'=>'1', 'position'=>40, 'visible'=>1, 'isameasure'=>'1', 'noteditable'=>'1'),
-		'qty' => array('type'=>'real', 'label'=>'Quantity', 'enabled'=>'1', 'position'=>40, 'visible'=>1, 'isameasure'=>'1', 'noteditable'=>'1'),
-		'amount' => array('type'=>'price', "label"=>"Amount", "enabled"=>'1', 'position'=>40, 'visible'=>'1', 'isameasure'=>'1', 'noteditable'=>'1'),
-		'fk_soc' => array('type'=>'integer:Societe:societe/class/societe.class.php:1:(status:=:1)', 'label'=>'ThirdParty', 'enabled'=>'1', 'position'=>40, 'visible'=>1, 'help'=>"LinkToThirparty",),
-		'tva_intra' => array('type'=>'varchar(64)', 'label'=>'partnerId', 'enabled'=>'1', 'position'=>40, 'visible'=>1, 'noteditable'=>'1'),
-		'mode_transport' =>array('type'=>'sellist:c_debweb_mode_transport:label:code::1:', 'label'=>'ModeTransport', 'enabled'=>1, 'visible'=>1, 'position'=>81, 'noteditable'=>'1'),
-		'region_code' => array('type'=>'varchar(32)', 'label'=>'regionCode', 'enabled'=>'1', 'position'=>40, 'visible'=>1, 'noteditable'=>'1'),
+		'id' => array('type'=>'integer', 'label'=>'ItemNumber', 'enabled'=>1, 'visible'=>1, 'noteditable'=>'1'),
+		'fk_facture' => array('type'=>'integer:Facture:compta/facture/class/facture.class.php', 'label'=>'Facture', 'enabled'=>1, 'visible'=>1, 'noteditable'=>'1', "css"=>"minwidth150"),
+		'fk_product' => array('type'=>'integer:Product:product/class/product.class.php', 'label'=>'Product', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'customcode' => array('type'=>'varchar(32)', 'label'=>'CN8Code', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'code' => array('type'=>'varchar(32)', 'label'=>'MSConsDestCode', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'product_code' => array('type'=>'varchar(32)', 'label'=>'countryOfOriginCode', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'weight' => array('type'=>'real', 'label'=>'netMass', 'enabled'=>'1', 'visible'=>1, 'isameasure'=>'1', 'noteditable'=>'1'),
+		'qty' => array('type'=>'real', 'label'=>'Quantity', 'enabled'=>'1', 'visible'=>1, 'isameasure'=>'1', 'noteditable'=>'1'),
+		'amount' => array('type'=>'price', "label"=>"Amount", "enabled"=>'1', 'visible'=>'1', 'isameasure'=>'1', 'noteditable'=>'1', "css"=>"minwidth100"),
+		'fk_soc' => array('type'=>'integer:Societe:societe/class/societe.class.php:1:(status:=:1)', 'label'=>'ThirdParty', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'tva_intra' => array('type'=>'varchar(64)', 'label'=>'partnerId', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'mode_transport' =>array('type'=>'sellist:c_debweb_mode_transport:label:code::1:', 'label'=>'ModeTransport', 'enabled'=>1, 'visible'=>1, 'noteditable'=>'1'),
+		'region_code' => array('type'=>'varchar(32)', 'label'=>'regionCode', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
 	);
 
 	public $id;
