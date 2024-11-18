@@ -25,6 +25,8 @@ INTRACOMMREPORT_NIV_OBLIGATION_INTRODUCTIONTooltip=Valeur attendue : 1 pour une 
 INTRACOMMREPORT_NIV_OBLIGATION_EXPEDITIONTooltip=Valeur attendue : 1 pour une réponse statistique, 4 pour un état récapitulatif ou 5 pour les deux.
 c_debweb_mode_transport = DebWeb mode transport
 DebWebNumRefModelDesc = Numéro de déclarant à six chiffres.
+DebWebNumRefPeriodModelDesc = Numéro de déclarant à six chiffres (Période de déclaration).
+NextDeclarationPeriod = Prochaine période de déclaration.
 
 #
 # About page

@@ -17,6 +17,7 @@ Settings = Settings
 DebWebSetupPage = DebWeb setup page
 NewSection=New section
 DebWebNumRefModelDesc = Six digit declaration sequence number.
+DebWebNumRefPeriodModelDesc = Six digit declaration sequence number with declaration period.
 DEBWEB_MYPARAM1 = My param 1
 DEBWEB_MYPARAM1Tooltip = My param 1 tooltip
 INTRACOMMREPORT_NUM_AGREMENTTooltip=Numéro d’agrément délivré par le centre de collecte de rat-tachement
@@ -25,6 +26,7 @@ INTRACOMMREPORT_ROLE_ACTEURTooltip=Deux valeurs possibles, sender ou PSI avec �
 INTRACOMMREPORT_NIV_OBLIGATION_INTRODUCTIONTooltip=Valeur attendue : 1 pour une réponse statistique, 4 pour un état récapitulatif ou 5 pour les deux.
 INTRACOMMREPORT_NIV_OBLIGATION_EXPEDITIONTooltip=Valeur attendue : 1 pour une réponse statistique, 4 pour un état récapitulatif ou 5 pour les deux.
 c_debweb_mode_transport = DebWeb transport modes
+NextDeclarationPeriod = Next declaration period.
 
 #
 # About page

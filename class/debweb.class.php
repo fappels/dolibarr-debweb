@@ -1088,15 +1088,15 @@ class DebWeb extends CommonObject
 		global $langs, $conf;
 		$langs->load("debweb@debweb");
 
-		if (!getDolGlobalString('DEBWEB_MYOBJECT_ADDON')) {
-			$conf->global->DEBWEB_MYOBJECT_ADDON = 'mod_debweb_standard';
+		if (!getDolGlobalString('DEBWEB_DEBWEB_ADDON')) {
+			$conf->global->DEBWEB_DEBWEB_ADDON = 'mod_debweb_standard';
 		}
 
-		if (getDolGlobalString('DEBWEB_MYOBJECT_ADDON')) {
+		if (getDolGlobalString('DEBWEB_DEBWEB_ADDON')) {
 			$mybool = false;
 
-			$file = getDolGlobalString('DEBWEB_MYOBJECT_ADDON').".php";
-			$classname = getDolGlobalString('DEBWEB_MYOBJECT_ADDON');
+			$file = getDolGlobalString('DEBWEB_DEBWEB_ADDON').".php";
+			$classname = getDolGlobalString('DEBWEB_DEBWEB_ADDON');
 
 			// Include file with class
 			$dirmodels = array_merge(array('/'), (array) $conf->modules_parts['models']);

@@ -478,8 +478,8 @@ class modDebWeb extends DolibarrModules
 		$this->import_convertvalue_array[$r] = array(
 			't.ref' => array(
 				'rule'=>'getrefifauto',
-				'class'=>(!getDolGlobalString('DEBWEB_MYOBJECT_ADDON') ? 'mod_debweb_standard' : getDolGlobalString('DEBWEB_MYOBJECT_ADDON')),
-				'path'=>"/core/modules/debweb/".(!getDolGlobalString('DEBWEB_MYOBJECT_ADDON') ? 'mod_debweb_standard' : getDolGlobalString('DEBWEB_MYOBJECT_ADDON')).'.php',
+				'class'=>(!getDolGlobalString('DEBWEB_DEBWEB_ADDON') ? 'mod_debweb_standard' : getDolGlobalString('DEBWEB_DEBWEB_ADDON')),
+				'path'=>"/core/modules/debweb/".(!getDolGlobalString('DEBWEB_DEBWEB_ADDON') ? 'mod_debweb_standard' : getDolGlobalString('DEBWEB_DEBWEB_ADDON')).'.php',
 				'classobject'=>'DebWeb',
 				'pathobject'=>'/debweb/class/debweb.class.php',
 			),
