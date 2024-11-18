@@ -43,6 +43,14 @@ MyPageName = My page name
 ModeTransport = Transport mode
 AnalysisPeriodMonth = Month
 AnalysisPeriodYear = Year
+ExportType = Export type
+ItemNumber = Item
+CN8Code = HS Code
+MSConsDestCode = Destination Country
+countryOfOriginCode = Origin Country
+netMass = Weight
+partnerId = #VAT
+regionCode = Region code
 
 #
 # Sample widget

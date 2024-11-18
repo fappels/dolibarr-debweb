@@ -165,10 +165,10 @@ class DebWeb extends CommonObject
 	//  */
 	// public $fk_element = 'fk_debweb';
 
-	// /**
-	//  * @var string    Name of subtable class that manage subtable lines
-	//  */
-	// public $class_element_line = 'DebWebline';
+	/**
+	  * @var string    Name of subtable class that manage subtable lines
+	  */
+	public $class_element_line = 'DebWebline';
 
 	// /**
 	//  * @var array	List of child tables. To test if we can delete object.
@@ -182,10 +182,10 @@ class DebWeb extends CommonObject
 	//  */
 	// protected $childtablesoncascade = array('debweb_debwebdet');
 
-	// /**
-	//  * @var DebWebLine[]     Array of subtable lines
-	//  */
-	// public $lines = array();
+	/**
+	  * @var DebWebLine[]     Array of subtable lines
+	  */
+	public $lines = array();
 
 
 
@@ -1064,18 +1064,46 @@ class DebWeb extends CommonObject
 	 */
 	public function getLinesArray()
 	{
+		global $conf;
+
 		$this->lines = array();
 
-		$objectline = new DebWebLine($this->db);
-		$result = $objectline->fetchAll('ASC', 'position', 0, 0, '(fk_debweb:=:'.((int) $this->id).')');
+		$intracommreport = new IntracommReport($this->db);
 
-		if (is_numeric($result)) {
-			$this->setErrorsFromObject($objectline);
-			return $result;
-		} else {
-			$this->lines = $result;
-			return $this->lines;
+		$sql = $intracommreport->getSQLFactLines($this->type_declaration, $this->period_year.'-'.$this->period_month, $this->exporttype);
+
+		$resql = $this->db->query($sql);
+
+		if ($resql && $this->db->num_rows($resql) > 0) {
+			$i = 1;
+
+			while ($res = $this->db->fetch_object($resql)) {
+				if ($this->exporttype == 'des') {
+					// TODO
+				} else {
+					$objectline = new DebWebLine($this->db);
+					$objectline->id = $i;
+					$objectline->fk_facture = $res->fk_facture;
+					$objectline->fk_product = $res->fk_product;
+					$objectline->customcode = $res->customcode;
+					$objectline->code = $res->code;
+					$objectline->product_code = $res->product_code;
+					$objectline->weight = round($res->weight * $res->qty);
+					$objectline->qty = $res->qty;
+					$objectline->amount = $res->total_ht;
+					$objectline->fk_soc = $res->id_client;
+					$objectline->tva_intra = $res->tva_intra;
+					$objectline->mode_transport = $res->mode_transport;
+					$objectline->region_code = substr($res->zip, 0, 2);
+
+					$this->lines[] = $objectline;
+				}
+
+				$i++;
+			}
 		}
+
+		return $this->lines;
 	}
 
 	/**
@@ -1232,12 +1260,44 @@ class DebWebLine extends CommonObjectLine
 {
 	// To complete with content of an object DebWebLine
 	// We should have a field rowid, fk_debweb and position
+	/**
+	 * @var array  Array with all fields and their property. Do not use it as a static var. It may be modified by constructor.
+	 */
+	public $fields=array(
+		'id' => array('type'=>'integer', 'label'=>'ItemNumber', 'enabled'=>1, 'position'=>1, 'notnull'=>1, 'visible'=>1, 'noteditable'=>'1', 'index'=>1, 'comment'=>"Id"),
+		'fk_facture' => array('type'=>'integer:Facture:compta/facture/class/facture.class.php', 'label'=>'Facture', 'enabled'=>1, 'visible'=>1, 'position'=>10, 'noteditable'=>'1'),
+		'fk_product' => array('type'=>'integer:Product:product/class/product.class.php', 'label'=>'Product', 'enabled'=>'1', 'position'=>20, 'visible'=>1, 'noteditable'=>'1'),
+		'customcode' => array('type'=>'varchar(32)', 'label'=>'CN8Code', 'enabled'=>'1', 'position'=>30, 'visible'=>1, 'noteditable'=>'1'),
+		'code' => array('type'=>'varchar(32)', 'label'=>'MSConsDestCode', 'enabled'=>'1', 'position'=>40, 'visible'=>1, 'noteditable'=>'1'),
+		'product_code' => array('type'=>'varchar(32)', 'label'=>'countryOfOriginCode', 'enabled'=>'1', 'position'=>40, 'visible'=>1, 'noteditable'=>'1'),
+		'weight' => array('type'=>'real', 'label'=>'netMass', 'enabled'=>'1', 'position'=>40, 'visible'=>1, 'isameasure'=>'1', 'noteditable'=>'1'),
+		'qty' => array('type'=>'real', 'label'=>'Quantity', 'enabled'=>'1', 'position'=>40, 'visible'=>1, 'isameasure'=>'1', 'noteditable'=>'1'),
+		'amount' => array('type'=>'price', "label"=>"Amount", "enabled"=>'1', 'position'=>40, 'visible'=>'1', 'isameasure'=>'1', 'noteditable'=>'1'),
+		'fk_soc' => array('type'=>'integer:Societe:societe/class/societe.class.php:1:(status:=:1)', 'label'=>'ThirdParty', 'enabled'=>'1', 'position'=>40, 'visible'=>1, 'help'=>"LinkToThirparty",),
+		'tva_intra' => array('type'=>'varchar(64)', 'label'=>'partnerId', 'enabled'=>'1', 'position'=>40, 'visible'=>1, 'noteditable'=>'1'),
+		'mode_transport' =>array('type'=>'sellist:c_debweb_mode_transport:label:code::1:', 'label'=>'ModeTransport', 'enabled'=>1, 'visible'=>1, 'position'=>81, 'noteditable'=>'1'),
+		'region_code' => array('type'=>'varchar(32)', 'label'=>'regionCode', 'enabled'=>'1', 'position'=>40, 'visible'=>1, 'noteditable'=>'1'),
+	);
+
+	public $id;
+	public $fk_facture;
+	public $fk_product;
+	public $customcode;
+	public $code;
+	public $product_code;
+	public $weight;
+	public $qty;
+	public $amount;
+	public $fk_soc;
+	public $tva_intra;
+	public $mode_transport;
+	public $region_code;
 
 	/**
 	 * To overload
 	 * @see CommonObjectLine
 	 */
-	public $parent_element = '';		// Example: '' or 'debweb'
+	public $parent_element = 'debweb';		// Example: '' or 'debweb'
 
 	/**
 	 * To overload
@@ -1252,8 +1312,25 @@ class DebWebLine extends CommonObjectLine
 	 */
 	public function __construct(DoliDB $db)
 	{
+		global $langs;
 		$this->db = $db;
 
-		$this->isextrafieldmanaged = 0;
+		// Unset fields that are disabled
+		foreach ($this->fields as $key => $val) {
+			if (isset($val['enabled']) && empty($val['enabled'])) {
+				unset($this->fields[$key]);
+			}
+		}
+
+		// Translate some data of arrayofkeyval
+		if (is_object($langs)) {
+			foreach ($this->fields as $key => $val) {
+				if (isset($val['arrayofkeyval']) && is_array($val['arrayofkeyval'])) {
+					foreach ($val['arrayofkeyval'] as $key2 => $val2) {
+						$this->fields[$key]['arrayofkeyval'][$key2]=$langs->trans($val2);
+					}
+				}
+			}
+		}
 	}
 }
