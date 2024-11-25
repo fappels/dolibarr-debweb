@@ -312,13 +312,13 @@ class IntracommReport extends CommonObject
 		global $mysoc, $conf;
 
 		if ($type == 'expedition' || $exporttype == 'des') {
-			$sql = "SELECT f.ref as refinvoice, f.rowid as fk_facture, f.total_ht";
+			$sql = "SELECT f.ref as refinvoice, f.rowid as fk_facture, l.total_ht";
 			$table = 'facture';
 			$table_extraf = 'facture_extrafields';
 			$tabledet = 'facturedet';
 			$field_link = 'fk_facture';
 		} else { // Introduction
-			$sql = "SELECT f.ref_supplier as refinvoice, f.rowid as fk_facture, f.total_ht";
+			$sql = "SELECT f.ref_supplier as refinvoice, f.rowid as fk_facture, l.total_ht";
 			$table = 'facture_fourn';
 			$table_extraf = 'facture_fourn_extrafields';
 			$tabledet = 'facture_fourn_det';
@@ -340,6 +340,7 @@ class IntracommReport extends CommonObject
 				AND l.product_type = ".($exporttype == "des" ? 1 : 0)."
 				AND f.entity = ".((int) $conf->entity)."
 				AND (s.fk_pays <> ".((int) $mysoc->country_id)." OR s.fk_pays IS NULL)
+				AND c.eec = 1
 				AND f.datef BETWEEN '".$this->db->escape($period_reference)."-01' AND '".$this->db->escape($period_reference)."-".date('t')."'";
 
 		return $sql;

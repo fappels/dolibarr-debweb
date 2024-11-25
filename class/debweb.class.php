@@ -1079,8 +1079,6 @@ class DebWeb extends CommonObject
 		if ($resql && $this->db->num_rows($resql) > 0) {
 			$i = 1;
 
-			$amountInvoiced = array();
-
 			while ($res = $this->db->fetch_object($resql)) {
 				if ($this->exporttype == 'des') {
 					// TODO
@@ -1102,14 +1100,10 @@ class DebWeb extends CommonObject
 
 					$this->lines[] = $objectline;
 
-					$amountInvoiced[$res->fk_facture] = $objectline->amount;
+					$this->amount += $objectline->amount;
 				}
 
 				$i++;
-			}
-
-			foreach ($amountInvoiced as $amount) {
-				$this->amount += $amount;
 			}
 		}
 
