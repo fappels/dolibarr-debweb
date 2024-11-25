@@ -51,6 +51,7 @@ countryOfOriginCode = Origin Country
 netMass = Weight
 partnerId = #VAT
 regionCode = Region code
+TotalInvoiced = Total amount invoiced
 
 #
 # Sample widget

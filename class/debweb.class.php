@@ -116,7 +116,7 @@ class DebWeb extends CommonObject
 		"type_declaration" => array("type"=>"varchar(64)", "label"=>"TypeOfDeclaration", "enabled"=>"1", 'position'=>34, 'notnull'=>1, "visible"=>"1", "arrayofkeyval"=>array("introduction" => "Introduction", "expedition" => "Expedition"), "default"=>"expedition",),
 		"period_month" => array("type"=>"varchar(64)", "label"=>"AnalysisPeriodMonth", "enabled"=>"1", 'position'=>36, 'notnull'=>0, "visible"=>"2",),
 		"period_year" => array("type"=>"varchar(64)", "label"=>"AnalysisPeriodYear", "enabled"=>"1", 'position'=>38, 'notnull'=>0, "visible"=>"2",),
-		"amount" => array("type"=>"price", "label"=>"Amount", "enabled"=>"1", 'position'=>40, 'notnull'=>0, "visible"=>"1", "default"=>"null", "isameasure"=>"1", "help"=>"Help text for amount", "validate"=>"1", 'noteditable'=>'1',),
+		"amount" => array("type"=>"price", "label"=>"Amount", "enabled"=>"1", 'position'=>40, 'notnull'=>0, "visible"=>"1", "default"=>"null", "isameasure"=>"1", "help"=>"TotalInvoiced", "validate"=>"1", 'noteditable'=>'1',),
 		"description" => array("type"=>"text", "label"=>"Description", "enabled"=>"1", 'position'=>60, 'notnull'=>0, "visible"=>"3", "validate"=>"1",),
 		"note_public" => array("type"=>"html", "label"=>"NotePublic", "enabled"=>"1", 'position'=>61, 'notnull'=>0, "visible"=>"0", "cssview"=>"wordbreak", "validate"=>"1",),
 		"note_private" => array("type"=>"html", "label"=>"NotePrivate", "enabled"=>"1", 'position'=>62, 'notnull'=>0, "visible"=>"0", "cssview"=>"wordbreak", "validate"=>"1",),
@@ -166,7 +166,7 @@ class DebWeb extends CommonObject
 	// public $fk_element = 'fk_debweb';
 
 	/**
-	  * @var string    Name of subtable class that manage subtable lines
+	  * @var string    Name of subtable class that manage subtable lines (lines model)
 	  */
 	public $class_element_line = 'DebWebline';
 
@@ -625,9 +625,7 @@ class DebWeb extends CommonObject
 
 		if (!$error) {
 			// set total amount
-			if (!empty($this->amount)) {
-				$this->setValueFrom('amount', $this->amount);
-			}
+			$this->setValueFrom('amount', $this->amount);
 			// generate xml
 			$dirdest = $conf->debweb->dir_output.'/debweb/'.$this->newref;
 			$filename = $dirdest.'/'.$this->exporttype.'_'.$this->newref.'.xml';
@@ -1081,6 +1079,8 @@ class DebWeb extends CommonObject
 		if ($resql && $this->db->num_rows($resql) > 0) {
 			$i = 1;
 
+			$amountInvoiced = array();
+
 			while ($res = $this->db->fetch_object($resql)) {
 				if ($this->exporttype == 'des') {
 					// TODO
@@ -1102,10 +1102,14 @@ class DebWeb extends CommonObject
 
 					$this->lines[] = $objectline;
 
-					$this->amount += $objectline->amount;
+					$amountInvoiced[$res->fk_facture] = $objectline->amount;
 				}
 
 				$i++;
+			}
+
+			foreach ($amountInvoiced as $amount) {
+				$this->amount += $amount;
 			}
 		}
 
