@@ -330,7 +330,7 @@ class modDebWeb extends DolibarrModules
 			'type'=>'left',
 			'titre'=>'DebWeb',
 			'prefix' => img_picto('', $this->picto, 'class="paddingright pictofixedwidth valignmiddle"'),
-			'mainmenu'=>'billing',
+			'mainmenu'=>'accountancy',
 			'leftmenu'=>'debweb',
 			'url'=>'/debweb/debweb_list.php',
 			'langs'=>'debweb@debweb',
@@ -344,7 +344,7 @@ class modDebWeb extends DolibarrModules
 		$this->menu[$r++]=array(
 			'fk_menu'=>'fk_mainmenu=accountancy,fk_leftmenu=debweb',
 			'type'=>'left',
-			'titre'=>'IntracommReportList',
+			'titre'=>'DebWebList',
 			'mainmenu'=>'debweb',
 			'leftmenu'=>'debweb_debweb_list',
 			'url'=>'/debweb/debweb_list.php',
