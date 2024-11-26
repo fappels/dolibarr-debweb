@@ -50,6 +50,16 @@ class mod_debweb_period extends ModeleNumRefDebWeb
 
 
 	/**
+	 *	Return if a module can be used or not
+	 *
+	 *	@return		boolean     true if module can be used
+	 */
+	public function isEnabled()
+	{
+		return false; // disable for the moment, problem when having both introduction and expedition
+	}
+
+	/**
 	 *  Return description of numbering module
 	 *
 	 *  @param      Translate   $langs Translate Object
