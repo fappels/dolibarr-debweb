@@ -52,6 +52,13 @@ netMass = Weight
 partnerId = #VAT
 regionCode = Region code
 TotalInvoiced = Total amount invoiced
+DebWebList = Declaration list
+NewDeclaration = New declaration
+Declaration = Declaration
+AnalysisPeriod = Analysis period
+TypeOfDeclaration = Type of declaration
+DEB = Goods exchange declaration (DEB)
+DES = Services exchange declaration (DES)
 
 #
 # Sample widget

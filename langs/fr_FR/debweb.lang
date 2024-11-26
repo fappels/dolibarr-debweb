@@ -52,6 +52,13 @@ netMass = Poids
 partnerId = #TVA
 regionCode = Code Region
 TotalInvoiced = Montant total facturé
+DebWebList = Liste déclaration
+NewDeclaration = Nouvelle déclaration
+Declaration = Déclaration
+AnalysisPeriod = Période d'analyse
+TypeOfDeclaration = Type de Déclaration
+DEB = Déclaration d'échange de biens (DEB)
+DES = Déclaration d'échange de services (DES)
 
 #
 # Sample widget
