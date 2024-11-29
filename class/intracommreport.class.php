@@ -370,12 +370,12 @@ class IntracommReport extends CommonObject
 		$item->addChild('countryOfOriginCode', $res->product_code); // code iso pays d'origine produit
 		$item->addChild('netMass', (string) round($res->weight * $res->qty)); // Poids du produit
 		$item->addChild('quantityInSU', (string) $res->qty); // Quantité de produit dans la ligne
-		$item->addChild('invoicedAmount', (string) round($res->total_ht)); // Montant total ht de la facture (entier attendu)
+		$item->addChild('invoicedAmount', (string) abs(round($res->total_ht))); // Montant total ht de la facture (entier attendu)
 		// $item->addChild('invoicedNumber', $res->refinvoice); // Numéro facture
 		if (!empty($res->tva_intra)) {
 			$item->addChild('partnerId', $res->tva_intra);
 		}
-		$item->addChild('statisticalProcedureCode', '21'); // TODO make this configurable
+		$item->addChild('statisticalProcedureCode', ($res->total_ht >= 0 ? '21' : '25')); // TODO make this configurable
 		$nature_of_transaction = $item->addChild('NatureOfTransaction');
 		$nature_of_transaction->addChild('natureOfTransactionACode', '1');
 		$nature_of_transaction->addChild('natureOfTransactionBCode', '1');

@@ -59,6 +59,7 @@ AnalysisPeriod = Analysis period
 TypeOfDeclaration = Type of declaration
 DEB = Goods exchange declaration (DEB)
 DES = Services exchange declaration (DES)
+procedureCode = Procedure code
 
 #
 # Sample widget

@@ -1092,7 +1092,8 @@ class DebWeb extends CommonObject
 					$objectline->product_code = $res->product_code;
 					$objectline->weight = round($res->weight * $res->qty);
 					$objectline->qty = $res->qty;
-					$objectline->amount = $res->total_ht;
+					$objectline->amount = abs($res->total_ht);
+					$objectline->procedure_code = ($res->total_ht >= 0 ? '21' : '25');
 					$objectline->fk_soc = $res->id_client;
 					$objectline->tva_intra = $res->tva_intra;
 					$objectline->mode_transport = $res->mode_transport;
@@ -1277,6 +1278,7 @@ class DebWebLine extends CommonObjectLine
 		'weight' => array('type'=>'real', 'label'=>'netMass', 'enabled'=>'1', 'visible'=>1, 'isameasure'=>'1', 'noteditable'=>'1'),
 		'qty' => array('type'=>'real', 'label'=>'Quantity', 'enabled'=>'1', 'visible'=>1, 'isameasure'=>'1', 'noteditable'=>'1'),
 		'amount' => array('type'=>'price', "label"=>"Amount", "enabled"=>'1', 'visible'=>'1', 'isameasure'=>'1', 'noteditable'=>'1', "css"=>"minwidth100"),
+		'procedure_code' => array('type'=>'varchar(32)', 'label'=>'procedureCode', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
 		'fk_soc' => array('type'=>'integer:Societe:societe/class/societe.class.php:1:(status:=:1)', 'label'=>'ThirdParty', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
 		'tva_intra' => array('type'=>'varchar(64)', 'label'=>'partnerId', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
 		'mode_transport' =>array('type'=>'sellist:c_debweb_mode_transport:label:code::1:', 'label'=>'ModeTransport', 'enabled'=>1, 'visible'=>1, 'noteditable'=>'1'),
@@ -1292,6 +1294,7 @@ class DebWebLine extends CommonObjectLine
 	public $weight;
 	public $qty;
 	public $amount;
+	public $procedure_code;
 	public $fk_soc;
 	public $tva_intra;
 	public $mode_transport;

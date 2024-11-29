@@ -59,6 +59,7 @@ AnalysisPeriod = Période d'analyse
 TypeOfDeclaration = Type de Déclaration
 DEB = Déclaration d'échange de biens (DEB)
 DES = Déclaration d'échange de services (DES)
+procedureCode = Régime
 
 #
 # Sample widget
