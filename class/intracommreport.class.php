@@ -2,7 +2,8 @@
 /* Copyright (C) 2015       ATM Consulting          <support@atm-consulting.fr>
  * Copyright (C) 2019-2020  Open-DSI                <support@open-dsi.fr>
  * Copyright (C) 2020-2024  Frédéric France         <frederic.france@free.fr>
- * Copyright (C) 2024		MDW							<mdeweerd@users.noreply.github.com>
+ * Copyright (C) 2024       MDW                     <mdeweerd@users.noreply.github.com>
+ * Copyright (C) 2024       Francis Appels          <francis.appels@z-application.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,73 +25,22 @@
  *    \brief      File of class to manage intracomm report
  */
 
-
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-
-
 /**
  * Class to manage intracomm report
  */
-class IntracommReport extends CommonObject
+class IntracommReport
 {
 	/**
-	 * @var string ID to identify managed object
+	 * @var string 		Error string
+	 * @see             $errors
 	 */
-	public $element = 'intracommreport';
+	public $error;
 
 	/**
-	 * @var string Name of table without prefix where object is stored
+	 * @var string[]	Array of error strings
 	 */
-	public $table_element = 'intracommreport';
-
-	/**
-	 * @var string Field with ID of parent key if this field has a parent
-	 */
-	public $fk_element = 'fk_intracommreport';
-
-	public $picto = 'intracommreport';
-
-	/**
-	 * @var string ref ???
-	 */
-	public $label;
-
-	public $period;
-
-	public $declaration;
-
-	/**
-	 * @var string declaration number
-	 */
-	public $declaration_number;
-
-	/**
-	 * @var string
-	 */
-	public $exporttype;			// deb or des
-
-	/**
-	 * @var string
-	 */
-	public $type_declaration;	// 'introduction' or 'expedition'
+	public $errors = array();
 	public $numero_declaration;
-
-
-	/**
-	 * DEB - Product
-	 */
-	const TYPE_DEB = 0;
-
-	/**
-	 * DES - Service
-	 */
-	const TYPE_DES = 1;
-
-	public static $type = array(
-		'introduction' => 'Introduction',
-		'expedition' => 'Expédition'
-	);
-
 
 	/**
 	 * Constructor
@@ -100,44 +50,6 @@ class IntracommReport extends CommonObject
 	public function __construct(DoliDB $db)
 	{
 		$this->db = $db;
-
-		$this->ismultientitymanaged = 1;
-		$this->exporttype = 'deb';
-	}
-
-	/**
-	 * Function create
-	 *
-	 * @param 	User 	$user 		User
-	 * @param 	int 	$notrigger 	notrigger
-	 * @return 	int
-	 */
-	public function create($user, $notrigger = 0)
-	{
-		return 1;
-	}
-
-	/**
-	 * Function fetch
-	 *
-	 * @param 	int 	$id 	object ID
-	 * @return 	int
-	 */
-	public function fetch($id)
-	{
-		return 1;
-	}
-
-	/**
-	 * Function delete
-	 *
-	 * @param 	User 	$user 		User
-	 * @param 	int 	$notrigger 	notrigger
-	 * @return 	int
-	 */
-	public function delete($user, $notrigger = 0)
-	{
-		return 1;
 	}
 
 	/**
@@ -182,7 +94,7 @@ class IntracommReport extends CommonObject
 		}
 		$declaration->addChild('PSIId', $psiId);
 		$function = $declaration->addChild('Function');
-		$functionCode = $function->addChild('functionCode', $mode);
+		$function->addChild('functionCode', $mode);
 		$declaration->addChild('declarationTypeCode', getDolGlobalString('INTRACOMMREPORT_NIV_OBLIGATION_'.strtoupper($type)));
 		$declaration->addChild('flowCode', ($type == 'introduction' ? 'A' : 'D'));
 		$declaration->addChild('currencyCode', $conf->global->MAIN_MONNAIE);
@@ -246,8 +158,6 @@ class IntracommReport extends CommonObject
 	 */
 	public function addItemsFact(&$declaration, $type, $period_reference, $exporttype = 'deb')
 	{
-		global $conf;
-
 		require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 
 		$sql = $this->getSQLFactLines($type, $period_reference, $exporttype);
@@ -458,24 +368,6 @@ class IntracommReport extends CommonObject
 	}
 
 	/**
-	 *	Return next reference of declaration not already used (or last reference)
-	 *
-	 *	@return    string					free ref or last ref
-	 */
-	public function getNextDeclarationNumber()
-	{
-		$sql = "SELECT MAX(numero_declaration) as max_declaration_number";
-		$sql .= " FROM ".MAIN_DB_PREFIX.$this->table_element;
-		$sql .= " WHERE exporttype = '".$this->db->escape($this->exporttype)."'";
-		$resql = $this->db->query($sql);
-		if ($resql) {
-			$res = $this->db->fetch_object($resql);
-		}
-
-		return (string) ($res->max_declaration_number + 1);
-	}
-
-	/**
 	 *	Verify declaration number. Positive integer of a maximum of 6 characters recommended by the documentation
 	 *
 	 *	@param     	string		$number		Number to verify / convert
@@ -484,34 +376,5 @@ class IntracommReport extends CommonObject
 	public static function getDeclarationNumber($number)
 	{
 		return str_pad($number, 6, '0', STR_PAD_LEFT);
-	}
-
-	/**
-	 *	Generate XML file
-	 *
-	 *  @param		string		$content_xml	Content
-	 *	@return		void
-	 */
-	public function generateXMLFile($content_xml)
-	{
-		$name = $this->period.'.xml';
-
-		// TODO Must be stored into a dolibarr temp directory
-		$fname = sys_get_temp_dir().'/'.$name;
-
-		$f = fopen($fname, 'w+');
-		fwrite($f, $content_xml);
-		fclose($f);
-
-		header('Content-Description: File Transfer');
-		header('Content-Type: application/xml');
-		header('Content-Disposition: attachment; filename="'.$name.'"');
-		header('Expires: 0');
-		header('Cache-Control: must-revalidate');
-		header('Pragma: public');
-		header('Content-Length: '.filesize($fname));
-
-		readfile($fname);
-		exit;
 	}
 }
