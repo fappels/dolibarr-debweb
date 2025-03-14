@@ -251,6 +251,7 @@ class IntracommReport
 				AND f.entity = ".((int) $conf->entity)."
 				AND (s.fk_pays <> ".((int) $mysoc->country_id)." OR s.fk_pays IS NULL)
 				AND c.eec = 1
+				AND l.total_ht <> 0
 				AND f.datef BETWEEN '".$this->db->escape($period_reference)."-01' AND '".$this->db->escape($period_reference)."-".date('t')."'";
 
 		return $sql;
