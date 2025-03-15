@@ -23,18 +23,18 @@ dol_include_once('/debweb/class/debweb.class.php');
 
 
 /**
- * \file    htdocs/modulebuilder/template/class/api_mymodule.class.php
- * \ingroup mymodule
- * \brief   File for API management of myobject.
+ * \file    htdocs/modulebuilder/template/class/api_debweb.class.php
+ * \ingroup debweb
+ * \brief   File for API management of debweb.
  */
 
 /**
- * API class for mymodule myobject
+ * API class for debweb debweb
  *
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
-class MyModuleApi extends DolibarrApi
+class DebWebApi extends DolibarrApi
 {
 	/**
 	 * @var DebWeb $debweb {@type DebWeb}
@@ -353,8 +353,8 @@ class MyModuleApi extends DolibarrApi
 	/* END MODULEBUILDER API DEBWEB */
 
 
-	/* BEGIN MODULEBUILDER API MYOBJECT */
-	/* END MODULEBUILDER API MYOBJECT */
+	/* BEGIN MODULEBUILDER API DEBWEB */
+	/* END MODULEBUILDER API DEBWEB */
 
 
 
