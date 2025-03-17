@@ -364,6 +364,8 @@ class DebWeb extends CommonObject
 		if ($result > 0 && !empty($this->table_element_line) && empty($nolines)) {
 			$this->fetchLines($noextrafields);
 		}
+		$this->period_year = sprintf("%04d", $this->period_year);
+		$this->period_month = sprintf("%02d", $this->period_month);
 		return $result;
 	}
 
@@ -632,7 +634,7 @@ class DebWeb extends CommonObject
 			$intracommreport = new IntracommReport($this->db);
 			$intracommreport->numero_declaration = $this->newref;
 			if ($this->exporttype == 'deb') {
-				$content_xml = $intracommreport->getXML('O', $this->type_declaration, $this->period_year.'-'.sprintf("%02d", $this->period_month));
+				$content_xml = $intracommreport->getXML('O', $this->type_declaration, $this->period_year.'-'.$this->period_month);
 			} elseif ($this->exporttype == 'des') {
 				$content_xml = $intracommreport->getXMLDes($this->period_year, $this->period_month, $this->type_declaration);
 				$this->errors = array_merge($this->errors, $intracommreport->errors);
