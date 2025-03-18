@@ -65,7 +65,7 @@ class IntracommReport
 		global $conf, $mysoc;
 
 		/**************Construction de quelques variables********************/
-		$party_id = substr(strtr($mysoc->tva_intra, array(' ' => '')), 0, 4).$mysoc->idprof2;
+		$party_id = substr(strtr($mysoc->tva_intra ?? '', array(' ' => '')), 0, 4).$mysoc->idprof2;
 		$declarant = substr($mysoc->managers, 0, 14);
 		$id_declaration = self::getDeclarationNumber($this->numero_declaration);
 		/********************************************************************/
@@ -118,8 +118,8 @@ class IntracommReport
 	/**
 	 * Generate XMLDes file
 	 *
-	 * @param int		$period_year		Year of declaration
-	 * @param int		$period_month		Month of declaration
+	 * @param string	$period_year		Year of declaration
+	 * @param string	$period_month		Month of declaration
 	 * @param string	$type_declaration	Declaration type by default - 'introduction' or 'expedition' (always 'expedition' for Des)
 	 * @return string|false					Return a well-formed XML string based on SimpleXML element, false or 0 if error
 	 */
@@ -131,7 +131,7 @@ class IntracommReport
 
 		$declaration_des = $e->addChild('declaration_des');
 		$declaration_des->addChild('num_des', self::getDeclarationNumber($this->numero_declaration));
-		$declaration_des->addChild('num_tvaFr', $mysoc->tva_intra); // /^FR[a-Z0-9]{2}[0-9]{9}$/  // Doit faire 13 caractères
+		$declaration_des->addChild('num_tvaFr', $mysoc->tva_intra ?? ''); // /^FR[a-Z0-9]{2}[0-9]{9}$/  // Doit faire 13 caractères
 		$declaration_des->addChild('mois_des', (string) $period_month);
 		$declaration_des->addChild('an_des', (string) $period_year);
 
@@ -152,8 +152,8 @@ class IntracommReport
 	 *
 	 *  @param	SimpleXMLElement	$declaration		Reference declaration
 	 *  @param	string				$type				Declaration type by default - 'introduction' or 'expedition' (always 'expedition' for Des)
-	 *  @param	int					$period_reference	Reference period
-	 *  @param	string				$exporttype	    	'deb' for DEB, 'des' for DES
+	 *  @param	string				$period_reference	Reference period
+	 *  @param	'deb'|'des'				$exporttype	    	'deb' for DEB, 'des' for DES
 	 *  @return	int       			  					Return integer <0 if KO, >0 if OK
 	 */
 	public function addItemsFact(&$declaration, $type, $period_reference, $exporttype = 'deb')
@@ -172,9 +172,10 @@ class IntracommReport
 				return 0;
 			}
 
+			$categ_fraisdeport = null;
 			if ($exporttype == 'deb' && getDolGlobalInt('INTRACOMMREPORT_CATEG_FRAISDEPORT') > 0) {
 				$categ_fraisdeport = new Categorie($this->db);
-				$categ_fraisdeport->fetch(getDolGlobalString('INTRACOMMREPORT_CATEG_FRAISDEPORT'));
+				$categ_fraisdeport->fetch(getDolGlobalInt('INTRACOMMREPORT_CATEG_FRAISDEPORT'));
 				$TLinesFraisDePort = array();
 			}
 
@@ -197,7 +198,7 @@ class IntracommReport
 				$i++;
 			}
 
-			if (!empty($TLinesFraisDePort)) {
+			if (!empty($TLinesFraisDePort) && $categ_fraisdeport !== null) {
 				$this->addItemFraisDePort($declaration, $TLinesFraisDePort, $type, $categ_fraisdeport, $i);
 			}
 
@@ -213,7 +214,7 @@ class IntracommReport
 	 *  Add invoice line
 	 *
 	 *  @param      string	$type				Declaration type by default - introduction or expedition (always 'expedition' for Des)
-	 *  @param      int		$period_reference	Reference declaration
+	 *  @param      string	$period_reference	Reference declaration
 	 *  @param      string	$exporttype	    	deb=DEB, des=DES
 	 *  @return     string       			  	Return integer <0 if KO, >0 if OK
 	 */
@@ -234,6 +235,9 @@ class IntracommReport
 			$tabledet = 'facture_fourn_det';
 			$field_link = 'fk_facture_fourn';
 		}
+		list($year, $month) = explode('-', $period_reference);
+		$period_end_of_month_day = cal_days_in_month(CAL_GREGORIAN, (int) $month, (int) $year);
+
 		$sql .= ", l.fk_product, l.qty
 				, p.weight, p.rowid as id_prod, p.customcode
 				, s.rowid as id_client, s.nom, s.zip, s.fk_pays, s.tva_intra
@@ -252,7 +256,7 @@ class IntracommReport
 				AND (s.fk_pays <> ".((int) $mysoc->country_id)." OR s.fk_pays IS NULL)
 				AND c.eec = 1
 				AND l.total_ht <> 0
-				AND f.datef BETWEEN '".$this->db->escape($period_reference)."-01' AND '".$this->db->escape($period_reference)."-".date('t')."'";
+				AND f.datef BETWEEN '".$this->db->escape($period_reference)."-01' AND '".$this->db->escape($period_reference)."-".$period_end_of_month_day."'";
 
 		return $sql;
 	}

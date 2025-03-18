@@ -55,6 +55,7 @@ class DebWeb extends CommonObject
 	 */
 	//public $element_for_permission = 'debweb';
 
+	public $isextrafieldmanaged;
 	/**
 	 * @var string 	String with name of icon for debweb. Must be a 'fa-xxx' fontawesome code (or 'fa-xxx_fa_color_size') or 'debweb@debweb' if picto is file 'img/object_debweb.png'.
 	 */
@@ -114,8 +115,8 @@ class DebWeb extends CommonObject
 		"label" => array("type"=>"varchar(255)", "label"=>"Label", "enabled"=>"1", 'position'=>30, 'notnull'=>0, "visible"=>"1", "alwayseditable"=>"1", "searchall"=>"1", "css"=>"minwidth300", "cssview"=>"wordbreak", "help"=>"Help text", "showoncombobox"=>"2", "validate"=>"1",),
 		"exporttype" => array("type"=>"varchar(64)", "label"=>"ExportType", "enabled"=>"1", 'position'=>32, 'notnull'=>1, "arrayofkeyval"=>array("deb" => "DEB", "des" => "DES"),"visible"=>"1",),
 		"type_declaration" => array("type"=>"varchar(64)", "label"=>"TypeOfDeclaration", "enabled"=>"1", 'position'=>34, 'notnull'=>1, "visible"=>"1", "arrayofkeyval"=>array("introduction" => "Introduction", "expedition" => "Expedition"), "default"=>"expedition",),
-		"period_month" => array("type"=>"varchar(64)", "label"=>"AnalysisPeriodMonth", "enabled"=>"1", 'position'=>36, 'notnull'=>0, "visible"=>"2",),
-		"period_year" => array("type"=>"varchar(64)", "label"=>"AnalysisPeriodYear", "enabled"=>"1", 'position'=>38, 'notnull'=>0, "visible"=>"2",),
+		"period_month" => array("type"=>"integer", "label"=>"AnalysisPeriodMonth", "enabled"=>"1", 'position'=>36, 'notnull'=>0, "visible"=>"2",),
+		"period_year" => array("type"=>"integer", "label"=>"AnalysisPeriodYear", "enabled"=>"1", 'position'=>38, 'notnull'=>0, "visible"=>"2",),
 		"amount" => array("type"=>"price", "label"=>"Amount", "enabled"=>"1", 'position'=>40, 'notnull'=>0, "visible"=>"5", "default"=>"null", "isameasure"=>"1", "help"=>"TotalInvoiced", "validate"=>"1", 'noteditable'=>'1',),
 		"description" => array("type"=>"text", "label"=>"Description", "enabled"=>"1", 'position'=>60, 'notnull'=>0, "visible"=>"3", "validate"=>"1",),
 		"note_public" => array("type"=>"html", "label"=>"NotePublic", "enabled"=>"1", 'position'=>61, 'notnull'=>0, "visible"=>"0", "cssview"=>"wordbreak", "validate"=>"1",),
@@ -151,43 +152,6 @@ class DebWeb extends CommonObject
 	public $period_year;
 	public $entity;
 	// END MODULEBUILDER PROPERTIES
-
-
-	// If this object has a subtable with lines
-
-	// /**
-	//  * @var string    Name of subtable line
-	//  */
-	// public $table_element_line = 'debweb_debwebline';
-
-	// /**
-	//  * @var string    Field with ID of parent key if this object has a parent
-	//  */
-	// public $fk_element = 'fk_debweb';
-
-	/**
-	  * @var string    Name of subtable class that manage subtable lines (lines model)
-	  */
-	public $class_element_line = 'DebWebline';
-
-	// /**
-	//  * @var array	List of child tables. To test if we can delete object.
-	//  */
-	// protected $childtables = array('mychildtable' => array('name'=>'DebWeb', 'fk_element'=>'fk_debweb'));
-
-	// /**
-	//  * @var array    List of child tables. To know object to delete on cascade.
-	//  *               If name matches '@ClassNAme:FilePathClass;ParentFkFieldName' it will
-	//  *               call method deleteByParentField(parentId, ParentFkFieldName) to fetch and delete child object
-	//  */
-	// protected $childtablesoncascade = array('debweb_debwebdet');
-
-	/**
-	  * @var DebWebLine[]     Array of subtable lines
-	  */
-	public $lines = array();
-
-
 
 	/**
 	 * Constructor
@@ -269,14 +233,7 @@ class DebWeb extends CommonObject
 		$this->db->begin();
 
 		// Load source object
-		$result = $object->fetchCommon($fromid);
-		if ($result > 0 && !empty($object->table_element_line)) {
-			$object->fetchLines();
-		}
-
-		// get lines so they will be clone
-		//foreach($this->lines as $line)
-		//	$line->fetch_optionals();
+		$object->fetchCommon($fromid);
 
 		// Reset some properties
 		unset($object->id);
@@ -361,28 +318,9 @@ class DebWeb extends CommonObject
 	public function fetch($id, $ref = null, $noextrafields = 0, $nolines = 0)
 	{
 		$result = $this->fetchCommon($id, $ref, '', $noextrafields);
-		if ($result > 0 && !empty($this->table_element_line) && empty($nolines)) {
-			$this->fetchLines($noextrafields);
-		}
-		$this->period_year = sprintf("%04d", $this->period_year);
-		$this->period_month = sprintf("%02d", $this->period_month);
+
 		return $result;
 	}
-
-	/**
-	 * Load object lines in memory from the database
-	 *
-	 * @param	int		$noextrafields	0=Default to load extrafields, 1=No extrafields
-	 * @return 	int         			Return integer <0 if KO, 0 if not found, >0 if OK
-	 */
-	public function fetchLines($noextrafields = 0)
-	{
-		$this->lines = array();
-
-		$result = $this->fetchLinesCommon('', $noextrafields);
-		return $result;
-	}
-
 
 	/**
 	 * Load list of objects in memory from the database.
@@ -484,24 +422,6 @@ class DebWeb extends CommonObject
 	{
 		return $this->deleteCommon($user, $notrigger);
 		//return $this->deleteCommon($user, $notrigger, 1);
-	}
-
-	/**
-	 *  Delete a line of object in database
-	 *
-	 *	@param  User	$user       User that delete
-	 *  @param	int		$idline		Id of line to delete
-	 *  @param 	int 	$notrigger  0=launch triggers after, 1=disable triggers
-	 *  @return int         		>0 if OK, <0 if KO
-	 */
-	public function deleteLine(User $user, $idline, $notrigger = 0)
-	{
-		if ($this->status < 0) {
-			$this->error = 'ErrorDeleteLineNotAllowedByObjectStatus';
-			return -2;
-		}
-
-		return $this->deleteLineCommon($user, $idline, $notrigger);
 	}
 
 
@@ -634,9 +554,9 @@ class DebWeb extends CommonObject
 			$intracommreport = new IntracommReport($this->db);
 			$intracommreport->numero_declaration = $this->newref;
 			if ($this->exporttype == 'deb') {
-				$content_xml = $intracommreport->getXML('O', $this->type_declaration, $this->period_year.'-'.$this->period_month);
+				$content_xml = $intracommreport->getXML('O', $this->type_declaration, $this->period_year.'-'.sprintf("%02d", $this->period_month));
 			} elseif ($this->exporttype == 'des') {
-				$content_xml = $intracommreport->getXMLDes($this->period_year, $this->period_month, $this->type_declaration);
+				$content_xml = $intracommreport->getXMLDes($this->period_year, sprintf("%02d", $this->period_month), $this->type_declaration);
 				$this->errors = array_merge($this->errors, $intracommreport->errors);
 			}
 			if (is_string($content_xml)) {
@@ -1062,11 +982,13 @@ class DebWeb extends CommonObject
 	}
 
 	/**
-	 * 	Create an array of lines
+	 * 	Create an array of lines for preview
+	 *
+	 * 	@param		object	$objectline		Object line
 	 *
 	 * 	@return array|int		array of lines if OK, <0 if KO
 	 */
-	public function getLinesArray()
+	public function getLinesArray($objectline)
 	{
 		$this->lines = array();
 
@@ -1074,7 +996,7 @@ class DebWeb extends CommonObject
 
 		$intracommreport = new IntracommReport($this->db);
 
-		$sql = $intracommreport->getSQLFactLines($this->type_declaration, $this->period_year.'-'.$this->period_month, $this->exporttype);
+		$sql = $intracommreport->getSQLFactLines($this->type_declaration, $this->period_year.'-'.sprintf("%02d", $this->period_month), $this->exporttype);
 
 		$resql = $this->db->query($sql);
 
@@ -1085,7 +1007,7 @@ class DebWeb extends CommonObject
 				if ($this->exporttype == 'des') {
 					// TODO
 				} else {
-					$objectline = new DebWebLine($this->db);
+					$objectline = clone $objectline;
 					$objectline->id = $i;
 					$objectline->fk_facture = $res->fk_facture;
 					$objectline->fk_product = $res->fk_product;
@@ -1261,18 +1183,98 @@ class DebWeb extends CommonObject
 require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
 
 /**
- * Class DebWebLine. You can also remove this and generate a CRUD class for lines objects.
+ * Class DebWebDebExpeditionLine. Help class to preview lines of a debweb deb expedition.
  */
-class DebWebLine extends CommonObjectLine
+class DebWebDebExpeditionLine extends CommonObjectLine
 {
-	// To complete with content of an object DebWebLine
-	// We should have a field rowid, fk_debweb and position
 	/**
 	 * @var array  Array with all fields and their property. Do not use it as a static var. It may be modified by constructor.
 	 */
 	public $fields=array(
 		'id' => array('type'=>'integer', 'label'=>'ItemNumber', 'enabled'=>1, 'visible'=>1, 'noteditable'=>'1'),
 		'fk_facture' => array('type'=>'integer:Facture:compta/facture/class/facture.class.php', 'label'=>'Facture', 'enabled'=>1, 'visible'=>1, 'noteditable'=>'1', "css"=>"minwidth150"),
+		'fk_product' => array('type'=>'integer:Product:product/class/product.class.php', 'label'=>'Product', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'customcode' => array('type'=>'varchar(32)', 'label'=>'CN8Code', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'code' => array('type'=>'varchar(32)', 'label'=>'MSConsDestCode', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'product_code' => array('type'=>'varchar(32)', 'label'=>'countryOfOriginCode', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'weight' => array('type'=>'real', 'label'=>'netMass', 'enabled'=>'1', 'visible'=>1, 'isameasure'=>'1', 'noteditable'=>'1'),
+		'qty' => array('type'=>'real', 'label'=>'Quantity', 'enabled'=>'1', 'visible'=>1, 'isameasure'=>'1', 'noteditable'=>'1'),
+		'amount' => array('type'=>'price', "label"=>"Amount", "enabled"=>'1', 'visible'=>'1', 'isameasure'=>'1', 'noteditable'=>'1', "css"=>"minwidth100"),
+		'procedure_code' => array('type'=>'varchar(32)', 'label'=>'procedureCode', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'fk_soc' => array('type'=>'integer:Societe:societe/class/societe.class.php:1:(status:=:1)', 'label'=>'ThirdParty', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'tva_intra' => array('type'=>'varchar(64)', 'label'=>'partnerId', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'mode_transport' =>array('type'=>'sellist:c_debweb_mode_transport:label:code::1:', 'label'=>'ModeTransport', 'enabled'=>1, 'visible'=>1, 'noteditable'=>'1'),
+		'region_code' => array('type'=>'varchar(32)', 'label'=>'regionCode', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+	);
+
+	public $id;
+	public $fk_facture;
+	public $fk_product;
+	public $customcode;
+	public $code;
+	public $product_code;
+	public $weight;
+	public $qty;
+	public $amount;
+	public $procedure_code;
+	public $fk_soc;
+	public $tva_intra;
+	public $mode_transport;
+	public $region_code;
+
+	/**
+	 * To overload
+	 * @see CommonObjectLine
+	 */
+	public $parent_element = 'debweb';		// Example: '' or 'debweb'
+
+	/**
+	 * To overload
+	 * @see CommonObjectLine
+	 */
+	public $fk_parent_attribute = '';	// Example: '' or 'fk_debweb'
+
+	/**
+	 * Constructor
+	 *
+	 * @param DoliDB $db Database handler
+	 */
+	public function __construct(DoliDB $db)
+	{
+		global $langs;
+		$this->db = $db;
+
+		// Unset fields that are disabled
+		foreach ($this->fields as $key => $val) {
+			if (isset($val['enabled']) && empty($val['enabled'])) {
+				unset($this->fields[$key]);
+			}
+		}
+
+		// Translate some data of arrayofkeyval
+		if (is_object($langs)) {
+			foreach ($this->fields as $key => $val) {
+				if (isset($val['arrayofkeyval']) && is_array($val['arrayofkeyval'])) {
+					foreach ($val['arrayofkeyval'] as $key2 => $val2) {
+						$this->fields[$key]['arrayofkeyval'][$key2]=$langs->trans($val2);
+					}
+				}
+			}
+		}
+	}
+}
+
+/**
+ * Class DebWebDebExpeditionLine. Help class to preview lines of a debweb deb introduction.
+ */
+class DebWebDebIntroductionLine extends CommonObjectLine
+{
+	/**
+	 * @var array  Array with all fields and their property. Do not use it as a static var. It may be modified by constructor.
+	 */
+	public $fields=array(
+		'id' => array('type'=>'integer', 'label'=>'ItemNumber', 'enabled'=>1, 'visible'=>1, 'noteditable'=>'1'),
+		'fk_facture' => array('type'=>'integer:FactureFournisseur:fourn/class/fournisseur.facture.class.php', 'label'=>'Facture', 'enabled'=>1, 'visible'=>1, 'noteditable'=>'1', "css"=>"minwidth150"),
 		'fk_product' => array('type'=>'integer:Product:product/class/product.class.php', 'label'=>'Product', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
 		'customcode' => array('type'=>'varchar(32)', 'label'=>'CN8Code', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
 		'code' => array('type'=>'varchar(32)', 'label'=>'MSConsDestCode', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
