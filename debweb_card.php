@@ -519,6 +519,10 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		$objectline = new DebWebDebExpeditionLine($object->db);
 	} elseif ($object->type_declaration == 'introduction' && $object->exporttype == 'deb') {
 		$objectline = new DebWebDebIntroductionLine($object->db);
+	} elseif ($object->type_declaration == 'expedition' && $object->exporttype == 'des') {
+		$objectline = new DebWebDeSExpeditionLine($object->db);
+	} elseif ($object->type_declaration == 'introduction' && $object->exporttype == 'des') {
+		$objectline = new DebWebDesIntroductionLine($object->db);
 	}
 	$result = $object->getLinesArray($objectline);
 

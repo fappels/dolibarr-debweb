@@ -1004,10 +1004,15 @@ class DebWeb extends CommonObject
 			$i = 1;
 
 			while ($res = $this->db->fetch_object($resql)) {
+				$objectline = clone $objectline;
 				if ($this->exporttype == 'des') {
-					// TODO
+					$objectline->id = $i;
+					$objectline->fk_facture = $res->fk_facture;
+					$objectline->fk_product = $res->fk_product;
+					$objectline->amount = abs($res->total_ht);
+					$objectline->fk_soc = $res->id_client;
+					$objectline->tva_intra = $res->tva_intra;
 				} else {
-					$objectline = clone $objectline;
 					$objectline->id = $i;
 					$objectline->fk_facture = $res->fk_facture;
 					$objectline->fk_product = $res->fk_product;
@@ -1022,11 +1027,11 @@ class DebWeb extends CommonObject
 					$objectline->tva_intra = $res->tva_intra;
 					$objectline->mode_transport = $res->mode_transport;
 					$objectline->region_code = substr($res->zip, 0, 2);
-
-					$this->lines[] = $objectline;
-
-					$this->amount += $objectline->amount;
 				}
+
+				$this->lines[] = $objectline;
+
+				$this->amount += $objectline->amount;
 
 				$i++;
 			}
@@ -1303,6 +1308,138 @@ class DebWebDebIntroductionLine extends CommonObjectLine
 	public $tva_intra;
 	public $mode_transport;
 	public $region_code;
+
+	/**
+	 * To overload
+	 * @see CommonObjectLine
+	 */
+	public $parent_element = 'debweb';		// Example: '' or 'debweb'
+
+	/**
+	 * To overload
+	 * @see CommonObjectLine
+	 */
+	public $fk_parent_attribute = '';	// Example: '' or 'fk_debweb'
+
+	/**
+	 * Constructor
+	 *
+	 * @param DoliDB $db Database handler
+	 */
+	public function __construct(DoliDB $db)
+	{
+		global $langs;
+		$this->db = $db;
+
+		// Unset fields that are disabled
+		foreach ($this->fields as $key => $val) {
+			if (isset($val['enabled']) && empty($val['enabled'])) {
+				unset($this->fields[$key]);
+			}
+		}
+
+		// Translate some data of arrayofkeyval
+		if (is_object($langs)) {
+			foreach ($this->fields as $key => $val) {
+				if (isset($val['arrayofkeyval']) && is_array($val['arrayofkeyval'])) {
+					foreach ($val['arrayofkeyval'] as $key2 => $val2) {
+						$this->fields[$key]['arrayofkeyval'][$key2]=$langs->trans($val2);
+					}
+				}
+			}
+		}
+	}
+}
+
+/**
+ * Class DebWebDeSExpeditionLine. Help class to preview lines of a debweb deb expedition.
+ */
+class DebWebDeSExpeditionLine extends CommonObjectLine
+{
+	/**
+	 * @var array  Array with all fields and their property. Do not use it as a static var. It may be modified by constructor.
+	 */
+	public $fields=array(
+		'id' => array('type'=>'integer', 'label'=>'ItemNumber', 'enabled'=>1, 'visible'=>1, 'noteditable'=>'1'),
+		'fk_facture' => array('type'=>'integer:Facture:compta/facture/class/facture.class.php', 'label'=>'Facture', 'enabled'=>1, 'visible'=>1, 'noteditable'=>'1', "css"=>"minwidth150"),
+		'fk_product' => array('type'=>'integer:Product:product/class/product.class.php', 'label'=>'Product', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'amount' => array('type'=>'price', "label"=>"Amount", "enabled"=>'1', 'visible'=>'1', 'isameasure'=>'1', 'noteditable'=>'1', "css"=>"minwidth100"),
+		'fk_soc' => array('type'=>'integer:Societe:societe/class/societe.class.php:1:(status:=:1)', 'label'=>'ThirdParty', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'tva_intra' => array('type'=>'varchar(64)', 'label'=>'partnerId', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+	);
+
+	public $id;
+	public $fk_facture;
+	public $fk_product;
+	public $amount;
+	public $fk_soc;
+	public $tva_intra;
+
+	/**
+	 * To overload
+	 * @see CommonObjectLine
+	 */
+	public $parent_element = 'debweb';		// Example: '' or 'debweb'
+
+	/**
+	 * To overload
+	 * @see CommonObjectLine
+	 */
+	public $fk_parent_attribute = '';	// Example: '' or 'fk_debweb'
+
+	/**
+	 * Constructor
+	 *
+	 * @param DoliDB $db Database handler
+	 */
+	public function __construct(DoliDB $db)
+	{
+		global $langs;
+		$this->db = $db;
+
+		// Unset fields that are disabled
+		foreach ($this->fields as $key => $val) {
+			if (isset($val['enabled']) && empty($val['enabled'])) {
+				unset($this->fields[$key]);
+			}
+		}
+
+		// Translate some data of arrayofkeyval
+		if (is_object($langs)) {
+			foreach ($this->fields as $key => $val) {
+				if (isset($val['arrayofkeyval']) && is_array($val['arrayofkeyval'])) {
+					foreach ($val['arrayofkeyval'] as $key2 => $val2) {
+						$this->fields[$key]['arrayofkeyval'][$key2]=$langs->trans($val2);
+					}
+				}
+			}
+		}
+	}
+}
+
+/**
+ * Class DebWebDesIntroductionLine. Help class to preview lines of a debweb deb expedition.
+ */
+class DebWebDesIntroductionLine extends CommonObjectLine
+{
+	/**
+	 * @var array  Array with all fields and their property. Do not use it as a static var. It may be modified by constructor.
+	 */
+	public $fields=array(
+		'id' => array('type'=>'integer', 'label'=>'ItemNumber', 'enabled'=>1, 'visible'=>1, 'noteditable'=>'1'),
+		'fk_facture' => array('type'=>'integer:FactureFournisseur:fourn/class/fournisseur.facture.class.php', 'label'=>'Facture', 'enabled'=>1, 'visible'=>1, 'noteditable'=>'1', "css"=>"minwidth150"),
+		'fk_product' => array('type'=>'integer:Product:product/class/product.class.php', 'label'=>'Product', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'amount' => array('type'=>'price', "label"=>"Amount", "enabled"=>'1', 'visible'=>'1', 'isameasure'=>'1', 'noteditable'=>'1', "css"=>"minwidth100"),
+		'fk_soc' => array('type'=>'integer:Societe:societe/class/societe.class.php:1:(status:=:1)', 'label'=>'ThirdParty', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+		'tva_intra' => array('type'=>'varchar(64)', 'label'=>'partnerId', 'enabled'=>'1', 'visible'=>1, 'noteditable'=>'1'),
+	);
+
+	public $id;
+	public $fk_facture;
+	public $fk_product;
+	public $amount;
+	public $fk_soc;
+	public $tva_intra;
 
 	/**
 	 * To overload
