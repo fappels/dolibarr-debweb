@@ -224,7 +224,7 @@ class IntracommReport
 	{
 		global $mysoc, $conf;
 
-		if ($type == 'expedition' || $exporttype == 'des') {
+		if ($type == 'expedition') {
 			$sql = "SELECT f.ref as refinvoice, f.rowid as fk_facture, l.total_ht";
 			$table = 'facture';
 			$table_extraf = 'facture_extrafields';
