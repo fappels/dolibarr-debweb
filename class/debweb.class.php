@@ -982,13 +982,13 @@ class DebWeb extends CommonObject
 	}
 
 	/**
-	 * 	Create an array of lines for preview
+	 * 	Create an array of declaration items for preview and calculate declaration total amount
 	 *
-	 * 	@param		object	$objectline		Object line
+	 * 	@param		object	$objectline_model		declaration item model
 	 *
 	 * 	@return array|int		array of lines if OK, <0 if KO
 	 */
-	public function getLinesArray($objectline)
+	public function getLinesArray($objectline_model)
 	{
 		$this->lines = array();
 
@@ -1004,7 +1004,7 @@ class DebWeb extends CommonObject
 			$i = 1;
 
 			while ($res = $this->db->fetch_object($resql)) {
-				$objectline = clone $objectline;
+				$objectline = clone $objectline_model;
 				if ($this->exporttype == 'des') {
 					$objectline->id = $i;
 					$objectline->fk_facture = $res->fk_facture;

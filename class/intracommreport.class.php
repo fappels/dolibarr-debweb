@@ -192,7 +192,7 @@ class IntracommReport
 						if (getDolGlobalInt('INTRACOMMREPORT_CATEG_FRAISDEPORT') > 0 && $categ_fraisdeport->containsObject('product', $res->id_prod)) {
 							$TLinesFraisDePort[] = $res;
 						} else {
-							$this->addItemXMl($declaration, $res, $i, '');
+							$this->addItemXMl($declaration, $type, $res, $i, '');
 						}
 					}
 				}
@@ -267,12 +267,13 @@ class IntracommReport
 	 *	Add item for DEB
 	 *
 	 * 	@param	SimpleXMLElement	$declaration		Reference declaration
+	 * 	@param	string				$type				Declaration type by default - 'introduction' or 'expedition'
 	 * 	@param	stdClass			$res				Result of request SQL
 	 *  @param	int					$i					Line Id
 	 * 	@param	string				$code_douane_spe	Specific customs authorities code
 	 *  @return	void
 	 */
-	public function addItemXMl(&$declaration, &$res, $i, $code_douane_spe = '')
+	public function addItemXMl(&$declaration, $type, &$res, $i, $code_douane_spe = '')
 	{
 		$item = $declaration->addChild('Item');
 		$item->addChild('itemNumber', (string) $i);
@@ -292,7 +293,11 @@ class IntracommReport
 		if (!empty($res->tva_intra)) {
 			$item->addChild('partnerId', $res->tva_intra);
 		}
-		$item->addChild('statisticalProcedureCode', ($res->total_ht >= 0 ? '21' : '25')); // TODO make this configurable
+		if ($type == 'introduction') {
+			$item->addChild('statisticalProcedureCode', ($res->total_ht >= 0 ? '11' : '15'));
+		} else {
+			$item->addChild('statisticalProcedureCode', ($res->total_ht >= 0 ? '21' : '25'));
+		}
 		$nature_of_transaction = $item->addChild('NatureOfTransaction');
 		$nature_of_transaction->addChild('natureOfTransactionACode', '1');
 		$nature_of_transaction->addChild('natureOfTransactionBCode', '1');
@@ -368,7 +373,7 @@ class IntracommReport
 			$resql = $this->db->query($sql);
 			$ress = $this->db->fetch_object($resql);
 
-			$this->addItemXMl($declaration, $res, $i, $ress->customcode);
+			$this->addItemXMl($declaration, $type, $res, $i, $ress->customcode);
 
 			$i++;
 		}
