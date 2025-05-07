@@ -1022,11 +1022,17 @@ class DebWeb extends CommonObject
 					$objectline->weight = round($res->weight * $res->qty);
 					$objectline->qty = $res->qty;
 					$objectline->amount = abs($res->total_ht);
-					$objectline->procedure_code = ($res->total_ht >= 0 ? '21' : '25');
+					if ($this->type_declaration == 'introduction') {
+						$objectline->procedure_code = ($res->total_ht >= 0 ? '11' : '15');
+						$objectline->region_code = substr(getDolGlobalString('INTRACOMMREPORT_RECEIVE_REGION_CODE'), 0, 2);
+					} else {
+						$objectline->procedure_code = ($res->total_ht >= 0 ? '21' : '25');
+						$objectline->region_code = substr(getDolGlobalString('INTRACOMMREPORT_SHIP_REGION_CODE'), 0, 2);
+					}
 					$objectline->fk_soc = $res->id_client;
 					$objectline->tva_intra = $res->tva_intra;
 					$objectline->mode_transport = $res->mode_transport;
-					$objectline->region_code = substr($res->zip, 0, 2);
+
 				}
 
 				$this->lines[] = $objectline;

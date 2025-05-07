@@ -25,6 +25,10 @@ INTRACOMMREPORT_TYPE_ACTEURTooltip=Deux valeurs possibles, PSI ou TDP avec ◦PS
 INTRACOMMREPORT_ROLE_ACTEURTooltip=Deux valeurs possibles, sender ou PSI avec ◦sender : émetteur du fichier ◦PSI : Déclarant.
 INTRACOMMREPORT_NIV_OBLIGATION_INTRODUCTIONTooltip=Valeur attendue : 1 pour une réponse statistique, 4 pour un état récapitulatif ou 5 pour les deux.
 INTRACOMMREPORT_NIV_OBLIGATION_EXPEDITIONTooltip=Valeur attendue : 1 pour une réponse statistique, 4 pour un état récapitulatif ou 5 pour les deux.
+INTRACOMMREPORT_RECEIVE_REGION_CODE=State code of recieve location.
+INTRACOMMREPORT_RECEIVE_REGION_CODETooltip=A 2 digit numeric code, for Corsica use 20.
+INTRACOMMREPORT_SHIP_REGION_CODE=State code of shipping location.
+INTRACOMMREPORT_SHIP_REGION_CODETooltip=A 2 digit numeric code, for Corsica use 20.
 c_debweb_mode_transport = DebWeb transport modes
 NextDeclarationPeriod = Next declaration period.
 

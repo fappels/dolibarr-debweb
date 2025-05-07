@@ -302,7 +302,11 @@ class IntracommReport
 		$nature_of_transaction->addChild('natureOfTransactionACode', '1');
 		$nature_of_transaction->addChild('natureOfTransactionBCode', '1');
 		$item->addChild('modeOfTransportCode', $res->mode_transport);
-		$item->addChild('regionCode', substr($res->zip, 0, 2));
+		if ($type == 'introduction') {
+			$item->addChild('regionCode', substr(getDolGlobalString('INTRACOMMREPORT_RECEIVE_REGION_CODE'), 0, 2));
+		} else {
+			$item->addChild('regionCode', substr(getDolGlobalString('INTRACOMMREPORT_SHIP_REGION_CODE'), 0, 2));
+		}
 	}
 
 	/**

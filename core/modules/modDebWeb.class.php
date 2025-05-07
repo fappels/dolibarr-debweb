@@ -502,12 +502,25 @@ class modDebWeb extends DolibarrModules
 	 */
 	public function init($options = '')
 	{
-		global $conf, $langs;
+		global $conf, $langs, $mysoc;
 
 		//$result = $this->_load_tables('/install/mysql/', 'debweb');
 		$result = $this->_load_tables('/debweb/sql/');
 		if ($result < 0) {
 			return -1; // Do not activate module if error 'not allowed' returned when loading module SQL queries (the _load_table run sql with run_sql with the error allowed parameter set to 'default')
+		}
+
+		// set default constant on first enable
+		if ($mysoc->state_code == '2A' || $mysoc->state_code == '2B') {
+			$state = '20';
+		} else {
+			$state = $mysoc->state_code;
+		}
+		if (empty(getDolGlobalString('INTRACOMMREPORT_RECEIVE_REGION_CODE'))) {
+			dolibarr_set_const($this->db, 'INTRACOMMREPORT_RECEIVE_REGION_CODE', $state);
+		}
+		if (empty(getDolGlobalString('INTRACOMMREPORT_SHIP_REGION_CODE'))) {
+			dolibarr_set_const($this->db, 'INTRACOMMREPORT_SHIP_REGION_CODE', $state);
 		}
 
 		// Create extrafields during init

@@ -125,6 +125,22 @@ $item = $formSetup->newItem('INTRACOMMREPORT_NIV_OBLIGATION_EXPEDITION');
 $item->defaultFieldValue = '1';
 $item->fieldAttr['placeholder'] = '';
 
+$item = $formSetup->newItem('INTRACOMMREPORT_SHIP_REGION_CODE');
+if ($mysoc->state_code == '2A' || $mysoc->state_code == '2B') {
+	$item->defaultFieldValue = '20';
+} else {
+	$item->defaultFieldValue = $mysoc->state_code;
+}
+$item->fieldAttr['placeholder'] = '';
+
+$item = $formSetup->newItem('INTRACOMMREPORT_RECEIVE_REGION_CODE');
+if ($mysoc->state_code == '2A' || $mysoc->state_code == '2B') {
+	$item->defaultFieldValue = '20';
+} else {
+	$item->defaultFieldValue = $mysoc->state_code;
+}
+$item->fieldAttr['placeholder'] = '';
+
 // Setup conf for selection of a simple textarea input but we replace the text of field title
 //$item = $formSetup->newItem('DEBWEB_MYPARAM3');
 //$item->nameText = $item->getNameText().' more html text ';
